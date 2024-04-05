@@ -834,7 +834,6 @@ app.post("/api/createstaff", (req, res) => {
     name,
     degicnation,
     department,
-    basicpay,
     pf,
     esi,
     aadharcard,
@@ -843,23 +842,31 @@ app.post("/api/createstaff", (req, res) => {
     direction,
   } = req.body;
 
-  const sqlInsert =
-    "INSERT INTO staff (name, degicnation, department, basicpay, pf, esi, aadharcard, pancard, additionalfield, direction) VALUES(?, ?,?, ?,?, ?,?, ?,?, ?,)";
+  // const testnames = additionalfield.map((test) => test.testname);
+  // const directionnames = direction.map((test) => test.testname);
 
-  db.query(
-    sqlInsert,
-    [
-      name,
-      degicnation,
-      department,
-      basicpay,
-      pf,
-      esi,
-      aadharcard,
-      pancard,
-      additionalfield,
-      direction,
-    ],
+  // const additionalfields = testnames.join(", ");
+  // const directions = directionnames.join(", ");
+
+  const additionalfields = additionalfield.map((field) => field.testname).join(", ");
+  const directions = direction.map((dir) => dir.directionName).join(", ");
+
+  const sqlInsert =
+  "INSERT INTO staff (name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield, direction) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+db.query(
+  sqlInsert,
+  [
+    name,
+    degicnation,
+    department,
+    pf,
+    esi,
+    aadharcard,
+    pancard,
+    additionalfields,
+    directions,
+  ],
     (error, result) => {
       if (error) {
         console.error("Error inserting data:", error);
