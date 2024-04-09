@@ -249,8 +249,9 @@ app.post("/api/createtest", (req, res) => {
   });
 });
 
-//get registation
+//=======================registation=================================\\
 
+//get registation
 app.get("/registation", async (req, res) => {
   try {
     const date = new Date("04/03/2024");
@@ -842,12 +843,6 @@ app.post("/api/createstaff", (req, res) => {
     direction,
   } = req.body;
 
-  // const testnames = additionalfield.map((test) => test.testname);
-  // const directionnames = direction.map((test) => test.testname);
-
-  // const additionalfields = testnames.join(", ");
-  // const directions = directionnames.join(", ");
-
   const additionalfields = additionalfield.map((field) => field.testname).join(", ");
   const directions = direction.map((dir) => dir.directionName).join(", ");
 
@@ -878,6 +873,7 @@ db.query(
     }
   );
 });
+
 //========================================BED MASTER =======================================\\
 
 //fatch bed
