@@ -69,6 +69,7 @@ app.get("/api/appointment", async (req, res) => {
     .then((data) => res.send(data))
     .catch((err) => console.log(err));
 });
+
 // create appointment data
 app.post("/api/createappointment", (req, res) => {
   const {
@@ -509,7 +510,6 @@ app.delete("/api/removeoutdoreuser/:id", (req, res) => {
 });
 
 //outdoreuser login
-
 app.post("/api/login", async (req, res) => {
   console.log("request body", req.body);
   try {
@@ -666,6 +666,7 @@ app.post("/api/createoutdoreregistation", (req, res) => {
     }
   );
 });
+
 //---------------admision-----------------------------------//
 
 //fatch admision  user
@@ -776,7 +777,7 @@ app.post("/api/createproduct", (req, res) => {
   } = req.body;
 
   const sqlInsert =
-    "INSERT INTO productmaster (   Description, purchesunit, Stock, sale, hsnsaccode, productgroup, productsubgroup, taxcategory, salerate, buyrate, opening, expdate, purchasedate, batchnumber) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO productmaster ( Description, purchesunit, Stock, sale, hsnsaccode, productgroup, productsubgroup, taxcategory, salerate, buyrate, opening, expdate, purchasedate, batchnumber) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   db.query(
     sqlInsert,
@@ -910,6 +911,67 @@ app.post("/api/createbed", (req, res) => {
       res.status(200).send("bed  Created");
     }
   });
+});
+
+
+app.get("/purchase", async (req, res) => {
+  try {
+    const sqlInsert =
+      "INSERT INTO purchase ( grndate, pono, partyinvno, invdate, rate, vendorcode, vendorname) VALUES('17/04/2024', '6', '26874', '09/03/2023', '532', '963258', 'rum')";
+    const result = await db.query(sqlInsert);
+    console.log("result", result);
+    res.send("purchase successfull");
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+//=========================================purches=======================================\\
+
+//fatch purches data
+
+app.get("/api/purchase", async (req, res) => {
+  await db
+    .query("SELECT * FROM purchase ")
+    .then((data) => res.send(data))
+    .catch((err) => console.log(err));
+});
+
+//create purches
+app.post("/api/createpurches", (req, res) => {                            
+  const { EntryID, PurchaseInvNo, InvDate, PartyInvNo, EntryType, VendorCode, VendorName } = req.body;
+  console.log(req.body);
+  const sqlInsert = "INSERT INTO purchaseentry ( EntryID, PurchaseInvNo, InvDate, PartyInvNo, EntryType, VendorCode, VendorName) VALUES(?, ?, ?, ?, ?, ?, ?)";
+
+  db.query(sqlInsert, [EntryID, PurchaseInvNo, InvDate, PartyInvNo, EntryType, VendorCode, VendorName], (error, result) => {
+    if (error) {
+      console.error("Error inserting data:", error);
+      res.status(500).send("Error inserting data into database");
+    } else {
+      console.log("Data inserted successfully");
+      res.status(200).send("bed  Created");
+    }
+  });
+});
+
+//=========================================Batch Number=======================================\\
+
+
+app.post("/api/createbatch", (req, res) => {
+  const { inout, docno, productcode, batchno, slno, mfgdate, expdate, qty } = req.body;
+  console.log(req.body);
+  const sqlInsert = "INSERT INTO whbatch ( `inout`, docno, productcode, batchno, slno, mfgdate, expdate, qty) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+
+  db.query(sqlInsert, [inout, docno, productcode, batchno, slno, mfgdate, expdate, qty], (error, result) => {
+    if (error) {
+      console.error("Error inserting data:", error);
+      res.status(500).send("Error inserting data into database");
+    } else {
+      console.log("Data inserted successfully");
+      res.status(200).send("Batch  Created");
+    }
+  })
 });
 
 db.query("SELECT 1")
