@@ -1,10 +1,14 @@
 const express = require("express");
+const bodyParser = require('body-parser');
 app = express();
 const cors = require("cors");
 
 const db = require("./db");
 app.use(cors());
 app.use(express.json());
+
+const jwt = require('jsonwebtoken');
+app.use(bodyParser.json());
 
 const bcrypt = require("bcrypt");
 
@@ -38,29 +42,6 @@ app.get("/product", async (req, res) => {
   }
 });
 
-// Login endpoint
-// app.post('/api/login', async (req, res) => {
-//   const { email, password } = req.body;
-
-//   db.query('SELECT * FROM users WHERE email = ?', [email], async (error, results) => {
-//     if (error) {
-//       console.error(error);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     } else {
-//       if (results.length > 0) {
-//         const match = await bcrypt.compare(password, results[0].password);
-//         if (match) {
-//           const token = jwt.sign({ email: results[0].email }, 'your-secret-key', { expiresIn: '1h' });
-//           res.json({ token });
-//         } else {
-//           res.status(401).json({ error: 'Invalid credentials' });
-//         }
-//       } else {
-//         res.status(401).json({ error: 'Invalid credentials' });
-//       }
-//     }
-//   });
-// });
 
 //fatch data
 app.get("/api/appointment", async (req, res) => {
@@ -481,19 +462,35 @@ app.get("/api/outdoreuser", async (req, res) => {
 });
 
 //create outdore user
-app.post("/api/createoutdoreuser", (req, res) => {
-  const { email, password, location } = req.body;
+// app.post("/api/createoutdoreuser", (req, res) => {
+//   const { email, password, location } = req.body;
 
-  const sqlInsert =
-    "INSERT INTO outdoreuser (email, password, location) VALUES(?, ?, ?)";
+//   const sqlInsert =
+//     "INSERT INTO outdoreuser (email, password, location) VALUES(?, ?, ?)";
 
-  db.query(sqlInsert, [email, password, location], (error, result) => {
-    if (error) {
-      console.error("Error inserting data:", error);
-      res.status(500).send("Error inserting data into database");
+//   db.query(sqlInsert, [email, password, location], (error, result) => {
+//     if (error) {
+//       console.error("Error inserting data:", error);
+//       res.status(500).send("Error inserting data into database");
+//     } else {
+//       console.log("Data inserted successfully");
+//       res.status(200).send("Doctor Created");
+//     }
+//   });
+// });
+
+app.post('/api/createoutdoreuser', async (req, res) => {
+  const { email, password } = req.body;
+  
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Insert user into database
+  db.query('INSERT INTO outdoreuser (email, password) VALUES (?, ?)', [email, hashedPassword], (err, result) => {
+    if (err) {
+      res.status(500).send('Error registering user');
     } else {
-      console.log("Data inserted successfully");
-      res.status(200).send("Doctor Created");
+      res.status(201).send('User registered successfully');
     }
   });
 });
@@ -528,7 +525,7 @@ app.post("/api/login", async (req, res) => {
 
     // const passwordMatch = await (password ===user.password);
     if (!password === user.password) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid  password" });
     }
     console.log("password", user.password);
 
@@ -538,6 +535,8 @@ app.post("/api/login", async (req, res) => {
     res.status(500).json({ message: "Error fetching user" });
   }
 });
+
+
 
 //--------------pathology--------------------------//
 
@@ -625,7 +624,7 @@ app.post("/api/createoutdoreregistation", (req, res) => {
     mobilenumber,
     guardianname,
     guardiannumber,
-    doctor,
+    doctorname,
     sex,
     age,
   } = req.body;
@@ -638,7 +637,7 @@ app.post("/api/createoutdoreregistation", (req, res) => {
     minute: "2-digit",
   }); // Format: HH:MM
   const sqlInsert =
-    "INSERT INTO registation (  date, time, patiantname, address, image, mobilenumber, guardianname, guardiannumber, doctor, sex, age ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  )";
+    "INSERT INTO outdore_registation (  date, time, patiantname, address, image, mobilenumber, guardianname, guardiannumber, doctorname, sex, age ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  )";
 
   db.query(
     sqlInsert,
@@ -651,7 +650,7 @@ app.post("/api/createoutdoreregistation", (req, res) => {
       mobilenumber,
       guardianname,
       guardiannumber,
-      doctor,
+      doctorname,
       sex,
       age,
     ],
@@ -665,6 +664,17 @@ app.post("/api/createoutdoreregistation", (req, res) => {
       }
     }
   );
+});
+
+//remove outdoreregistaion data
+app.delete("/api/removeoutdoreregistaion/:id", (req, res) => {
+  const { id } = req.params;
+  const sqlRemove = "DELETE FROM outdore_registation WHERE id = ?";
+  db.query(sqlRemove, id, (error, result) => {
+    if (error) {
+      console.log(error);
+    }
+  });
 });
 
 //---------------admision-----------------------------------//
