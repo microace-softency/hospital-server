@@ -536,8 +536,6 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-
-
 //--------------pathology--------------------------//
 
 //fatch pathology  user
