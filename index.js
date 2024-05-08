@@ -162,7 +162,6 @@ app.post("/api/createdoctor", (req, res) => {
 });
 
 //book doctor
-
 app.delete("/api/removedoctor/:id", (req, res) => {
   const { id } = req.params;
   const sqlRemove = "DELETE FROM doctor WHERE id = ?";
@@ -182,7 +181,7 @@ app.get("/api/doctor/:id", async (req, res) => {
     const result = await db.query(sqlGet, id);
 
     if (result.length === 0) {
-      res.status(404).json({ error: "class not found" });
+      res.status(404).json({ error: "Doctor not found" });
     } else {
       res.json(result[0]);
     }
@@ -192,6 +191,18 @@ app.get("/api/doctor/:id", async (req, res) => {
   }
 });
 
+//Doctor details update
+app.put("/api/updatedoctor/:id", async(req, res)=>{
+  const{id}= req.params;
+  const{doctorname,designation,fees, percentage}= req.body
+  const sqlUpdate = "UPDATE doctor SET doctorname = ?,designation = ?,fees = ?, percentage = ?  WHERE id = ?";
+  await db.query(sqlUpdate, [doctorname,designation,fees, percentage, id], (error, result ) =>{
+    if (error) {
+      console.log(error);
+    }
+    res.send(result)
+  })
+});
 //------------------test---------------------//
 
 //fatch test data
