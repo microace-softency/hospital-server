@@ -274,6 +274,7 @@ app.put("/api/updatetest/:id", async(req, res)=>{
     res.send(result)
   })
 });
+
 //=======================registation=================================\\
 
 //get registation
@@ -403,7 +404,6 @@ app.get("/api/registation/:id", async (req, res) => {
 });
 
 //Registation details update
-
 app.put("/api/updateregistation/:id", async(req, res)=>{
   const{id}= req.params;
   const{date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber}= req.body
@@ -415,6 +415,7 @@ app.put("/api/updateregistation/:id", async(req, res)=>{
     res.send(result)
   })
 });
+
 //=======================Location=================================\\
 
 //fatch location data
@@ -458,6 +459,37 @@ app.delete("/api/removelocation/:id", (req, res) => {
   });
 });
 
+//location details view
+app.get("/api/location/:id", async (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM location WHERE id = ?";
+
+  try {
+    const result = await db.query(sqlGet, id);
+
+    if (result.length === 0) {
+      res.status(404).json({ error: "Location not found" });
+    } else {
+      res.json(result[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}); 
+
+//location details update
+app.put("/api/updatelocation/:id", async(req, res)=>{
+  const{id}= req.params;
+  const{address, district, pincode, pos, postoffice}= req.body
+  const sqlUpdate = "UPDATE location SET address = ?, district = ?, pincode = ?, pos = ?, postoffice = ?  WHERE id = ?";
+  await db.query(sqlUpdate, [address, district, pincode, pos, postoffice, id], (error, result ) =>{
+    if (error) {
+      console.log(error);
+    }
+    res.send(result)
+  })
+});
 //--------------------packeg---------------------//
 
 //fatch packeg
@@ -495,6 +527,40 @@ app.post("/api/createpackeg", (req, res) => {
     }
   });
 });
+
+
+//packeg details view
+app.get("/api/packeg/:id", async (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM packeg WHERE id = ?";
+
+  try {
+    const result = await db.query(sqlGet, id);
+
+    if (result.length === 0) {
+      res.status(404).json({ error: "Packeg not found" });
+    } else {
+      res.json(result[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}); 
+
+//packeg details update
+app.put("/api/updatepackeg/:id", async(req, res)=>{
+  const{id}= req.params;
+  const{packegname, packegrate, packegnote }= req.body
+  const sqlUpdate = "UPDATE packeg SET packegname = ?, packegrate = ?, packegnote = ? WHERE id = ?";
+  await db.query(sqlUpdate, [packegname, packegrate, packegnote , id], (error, result ) =>{
+    if (error) {
+      console.log(error);
+    }
+    res.send(result)
+  })
+});
+
 
 ///---------------outdoreuser----------------------//
 
@@ -646,6 +712,37 @@ app.post("/api/createpathology", (req, res) => {
   );
 });
 
+//pathology details view
+app.get("/api/pathology/:id", async (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM pathology WHERE id = ?";
+
+  try {
+    const result = await db.query(sqlGet, id);
+
+    if (result.length === 0) {
+      res.status(404).json({ error: "Data not found" });
+    } else {
+      res.json(result[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}); 
+
+//pathology details update
+app.put("/api/updatepathology/:id", async(req, res)=>{
+  const{id}= req.params;
+  const{patientname, patientnumber, testname, referDrName, totalAmount, advancePayment, duePayment, date }= req.body
+  const sqlUpdate = "UPDATE pathology SET patientname = ? , patientnumber = ? , testname = ? , referDrName = ? , totalAmount = ? , advancePayment = ? , duePayment = ? , date = ? WHERE id = ?";
+  await db.query(sqlUpdate, [patientname, patientnumber, testname, referDrName, totalAmount, advancePayment, duePayment, date , id], (error, result ) =>{
+    if (error) {
+      console.log(error);
+    }
+    res.send(result)
+  })
+});
 //-----------------------outdoreregistaion-----------------------//
 
 //fatch data
