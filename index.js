@@ -959,6 +959,37 @@ app.post("/api/createproduct", (req, res) => {
   );
 });
 
+//product details view
+app.get("/api/product/:id", async (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM productmaster WHERE id = ?";
+
+  try {
+    const result = await db.query(sqlGet, id);
+
+    if (result.length === 0) {
+      res.status(404).json({ error: "Product not found" });
+    } else {
+      res.json(result[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}); 
+
+//product details update
+app.put("/api/updateproduct/:id", async(req, res)=>{
+  const{id}= req.params;
+  const{Description, purchesunit, Stock, sale, hsnsaccode, productgroup, productsubgroup, taxcategory, salerate, buyrate, opening, expdate, purchasedate, batchnumber }= req.body
+  const sqlUpdate = "UPDATE productmaster SET Description = ?, purchesunit = ?, Stock = ?, sale = ?, hsnsaccode = ?, productgroup = ?, productsubgroup = ?, taxcategory = ?, salerate = ?, buyrate = ?, opening = ?, expdate = ?, purchasedate = ?, batchnumber = ? WHERE id = ?";
+  await db.query(sqlUpdate, [Description, purchesunit, Stock, sale, hsnsaccode, productgroup, productsubgroup, taxcategory, salerate, buyrate, opening, expdate, purchasedate, batchnumber , id], (error, result ) =>{
+    if (error) {
+      console.log(error);
+    }
+    res.send(result)
+  })
+});
 //  ======================================STAFF MASTER ====================================\\
 
 //fatch staff
