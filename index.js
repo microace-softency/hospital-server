@@ -392,7 +392,7 @@ app.get("/api/registation/:id", async (req, res) => {
     const result = await db.query(sqlGet, id);
 
     if (result.length === 0) {
-      res.status(404).json({ error: "class not found" });
+      res.status(404).json({ error: " not found" });
     } else {
       res.json(result[0]);
     }
@@ -402,18 +402,20 @@ app.get("/api/registation/:id", async (req, res) => {
   }
 });
 
-//pataint details update
-// app.put("/api/classupdate/:id", async(req, res)=>{
-//   const{id}= req.params;
-//   const{classcode, classname}= req.body
-//   const sqlUpdate = "UPDATE class SET classcode = ?, classname = ? WHERE id = ?";
-//   await db.query(sqlUpdate, [classcode, classname, id], (error, result ) =>{
-//     if (error) {
-//       console.log(error);
-//     }
-//     res.send(result)
-//   })
-// });
+//Registation details update
+
+app.put("/api/updateregistation/:id", async(req, res)=>{
+  const{id}= req.params;
+  const{date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber}= req.body
+  const sqlUpdate = "UPDATE registation SET date = ?, location = ?, name = ?, image = ?, mobilenumber = ?, sex = ?, age = ?, doctorname = ?, time = ?, type = ?, price = ?, guardianname = ?, guardiannumber = ?  WHERE id = ?";
+  await db.query(sqlUpdate, [date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, id], (error, result ) =>{
+    if (error) {
+      console.log(error);
+    }
+    res.send(result)
+  })
+});
+//=======================Location=================================\\
 
 //fatch location data
 app.get("/api/location", async (req, res) => {
