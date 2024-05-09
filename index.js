@@ -189,7 +189,7 @@ app.get("/api/doctor/:id", async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-});
+}); 
 
 //Doctor details update
 app.put("/api/updatedoctor/:id", async(req, res)=>{
@@ -242,6 +242,25 @@ app.post("/api/createtest", (req, res) => {
     }
   });
 });
+
+//Test details view
+app.get("/api/test/:id", async (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM test WHERE id = ?";
+
+  try {
+    const result = await db.query(sqlGet, id);
+
+    if (result.length === 0) {
+      res.status(404).json({ error: "Test not found" });
+    } else {
+      res.json(result[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}); 
 
 //Test details update
 app.put("/api/updatetest/:id", async(req, res)=>{
