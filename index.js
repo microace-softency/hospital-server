@@ -203,6 +203,7 @@ app.put("/api/updatedoctor/:id", async(req, res)=>{
     res.send(result)
   })
 });
+
 //------------------test---------------------//
 
 //fatch test data
@@ -237,11 +238,23 @@ app.post("/api/createtest", (req, res) => {
       res.status(500).send("Error inserting data into database");
     } else {
       console.log("Data inserted successfully");
-      res.status(200).send("Doctor Created");
+      res.status(200).send("Test Created");
     }
   });
 });
 
+//Test details update
+app.put("/api/updatetest/:id", async(req, res)=>{
+  const{id}= req.params;
+  const{testname, amount, day}= req.body
+  const sqlUpdate = "UPDATE test SET testname = ?, amount = ?, day = ?  WHERE id = ?";
+  await db.query(sqlUpdate, [testname, amount, day, id], (error, result ) =>{
+    if (error) {
+      console.log(error);
+    }
+    res.send(result)
+  })
+});
 //=======================registation=================================\\
 
 //get registation
