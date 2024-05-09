@@ -1056,6 +1056,37 @@ db.query(
   );
 });
 
+//staff details view
+app.get("/api/staff/:id", async (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM staff WHERE id = ?";
+
+  try {
+    const result = await db.query(sqlGet, id);
+
+    if (result.length === 0) {
+      res.status(404).json({ error: "Staff not found" });
+    } else {
+      res.json(result[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}); 
+
+//staff details update
+app.put("/api/updatestaff/:id", async(req, res)=>{
+  const{id}= req.params;
+  const{name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield, direction }= req.body
+  const sqlUpdate = "UPDATE staff SET name = ? , degicnation = ? , department = ? , pf = ? , esi = ? , aadharcard = ? , pancard = ? , additionalfield = ? , direction = ? WHERE id = ?";
+  await db.query(sqlUpdate, [name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield, direction , id], (error, result ) =>{
+    if (error) {
+      console.log(error);
+    }
+    res.send(result)
+  })
+});
 //========================================BED MASTER =======================================\\
 
 //fatch bed
