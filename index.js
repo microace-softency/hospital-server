@@ -853,10 +853,11 @@ app.post("/api/createadmision", (req, res) => {
     time,
     guardiannumbaer,
     guardianname,
+    bed
   } = req.body;
 
   const sqlInsert =
-    "INSERT INTO admissions (  name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO admissions (  name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
   db.query(
     sqlInsert,
@@ -873,6 +874,7 @@ app.post("/api/createadmision", (req, res) => {
       time,
       guardiannumbaer,
       guardianname,
+      bed
     ],
     (error, result) => {
       if (error) {
@@ -1108,7 +1110,7 @@ app.delete("/api/removebed/:id", (req, res) => {
   });
 });
 
-//create product
+//create bed
 app.post("/api/createbed", (req, res) => {
   const { bedname, type } = req.body;
 
@@ -1125,6 +1127,39 @@ app.post("/api/createbed", (req, res) => {
   });
 });
 
+
+//Bed details view
+app.get("/api/bed/:id", async (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM bed WHERE id = ?";
+
+  try {
+    const result = await db.query(sqlGet, id);
+
+    if (result.length === 0) {
+      res.status(404).json({ error: "Bed not found" });
+    } else {
+      res.json(result[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}); 
+
+//Bed details update
+
+app.put("/api/updatebed/:id", async(req, res)=>{
+  const{id}= req.params;
+  const{bedname, type }= req.body
+  const sqlUpdate = "UPDATE bed SET bedname = ?, type = ?  WHERE id = ?";
+  await db.query(sqlUpdate, [bedname, type,  id], (error, result ) =>{
+    if (error) {
+      console.log(error);
+    }
+    res.send(result)
+  })
+});
 
 app.get("/purchase", async (req, res) => {
   try {
