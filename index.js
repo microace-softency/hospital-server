@@ -888,6 +888,38 @@ app.post("/api/createadmision", (req, res) => {
   );
 });
 
+
+//Admssion details view
+app.get("/api/admission/:id", async (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM admissions WHERE id = ?";
+
+  try {
+    const result = await db.query(sqlGet, id);
+
+    if (result.length === 0) {
+      res.status(404).json({ error: "Admissions Data not found" });
+    } else {
+      res.json(result[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}); 
+
+//Admssion details update
+app.put("/api/updateadmission/:id", async(req, res)=>{
+  const{id}= req.params;
+  const{name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed }= req.body
+  const sqlUpdate = "UPDATE admissions SET name = ?, address = ?, mobilenumber = ?, pincode = ?, block = ?, age = ?, sex = ?, doctor = ?, date = ?, time = ?, guardiannumbaer = ?, guardianname = ?, bed = ? WHERE id = ?";
+  await db.query(sqlUpdate, [name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed , id], (error, result ) =>{
+    if (error) {
+      console.log(error);
+    }
+    res.send(result)
+  })
+});
 //===================================product==========================================\\
 
 //fatch data
