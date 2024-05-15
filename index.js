@@ -12,6 +12,9 @@ app.use(bodyParser.json());
 
 const bcrypt = require("bcrypt");
 
+doctorRoutes = require('./controllers/doctor');
+testRoutes = require('./controllers/test');
+
 app.get("/", (req, res) => {
   res.send("hellow");
 });
@@ -132,148 +135,11 @@ app.get("/location", async (req, res) => {
 });
 //----------------doctor----------------------//
 
-//fatch doctor data
-app.get("/api/doctor", async (req, res) => {
-  await db
-    .query("SELECT * FROM doctor ")
-    .then((data) => res.send(data))
-    .catch((err) => console.log(err));
-});
-//create doctor
-app.post("/api/createdoctor", (req, res) => {
-  const { doctorname, designation, fees, percentage } = req.body;
-
-  const sqlInsert =
-    "INSERT INTO doctor (doctorname,designation,fees, percentage) VALUES(?, ?, ?, ?)";
-
-  db.query(
-    sqlInsert,
-    [doctorname, designation, fees, percentage],
-    (error, result) => {
-      if (error) {
-        console.error("Error inserting data:", error);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Doctor Created");
-      }
-    }
-  );
-});
-
-//book doctor
-app.delete("/api/removedoctor/:id", (req, res) => {
-  const { id } = req.params;
-  const sqlRemove = "DELETE FROM doctor WHERE id = ?";
-  db.query(sqlRemove, id, (error, result) => {
-    if (error) {
-      console.log(error);
-    }
-  });
-});
-
-//doctor details view
-app.get("/api/doctor/:id", async (req, res) => {
-  const { id } = req.params;
-  const sqlGet = "SELECT * FROM doctor WHERE id = ?";
-
-  try {
-    const result = await db.query(sqlGet, id);
-
-    if (result.length === 0) {
-      res.status(404).json({ error: "Doctor not found" });
-    } else {
-      res.json(result[0]);
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-}); 
-
-//Doctor details update
-app.put("/api/updatedoctor/:id", async(req, res)=>{
-  const{id}= req.params;
-  const{doctorname,designation,fees, percentage}= req.body
-  const sqlUpdate = "UPDATE doctor SET doctorname = ?,designation = ?,fees = ?, percentage = ?  WHERE id = ?";
-  await db.query(sqlUpdate, [doctorname,designation,fees, percentage, id], (error, result ) =>{
-    if (error) {
-      console.log(error);
-    }
-    res.send(result)
-  })
-});
+app.use('/api/doctor', doctorRoutes)
 
 //------------------test---------------------//
 
-//fatch test data
-app.get("/api/test", async (req, res) => {
-  await db
-    .query("SELECT * FROM test ")
-    .then((data) => res.send(data))
-    .catch((err) => console.log(err));
-});
-
-//remove test data
-app.delete("/api/removetest/:id", (req, res) => {
-  const { id } = req.params;
-  const sqlRemove = "DELETE FROM test WHERE id = ?";
-  db.query(sqlRemove, id, (error, result) => {
-    if (error) {
-      console.log(error);
-    }
-  });
-});
-
-//create test data
-app.post("/api/createtest", (req, res) => {
-  const { testname, amount, day } = req.body;
-
-  const sqlInsert =
-    "INSERT INTO test (  testname, amount, day) VALUES(?, ?, ?)";
-
-  db.query(sqlInsert, [testname, amount, day], (error, result) => {
-    if (error) {
-      console.error("Error inserting data:", error);
-      res.status(500).send("Error inserting data into database");
-    } else {
-      console.log("Data inserted successfully");
-      res.status(200).send("Test Created");
-    }
-  });
-});
-
-//Test details view
-app.get("/api/test/:id", async (req, res) => {
-  const { id } = req.params;
-  const sqlGet = "SELECT * FROM test WHERE id = ?";
-
-  try {
-    const result = await db.query(sqlGet, id);
-
-    if (result.length === 0) {
-      res.status(404).json({ error: "Test not found" });
-    } else {
-      res.json(result[0]);
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-}); 
-
-//Test details update
-app.put("/api/updatetest/:id", async(req, res)=>{
-  const{id}= req.params;
-  const{testname, amount, day}= req.body
-  const sqlUpdate = "UPDATE test SET testname = ?, amount = ?, day = ?  WHERE id = ?";
-  await db.query(sqlUpdate, [testname, amount, day, id], (error, result ) =>{
-    if (error) {
-      console.log(error);
-    }
-    res.send(result)
-  })
-});
+app.use('/api/test', testRoutes)
 
 //=======================registation=================================\\
 
