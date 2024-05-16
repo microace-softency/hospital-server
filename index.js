@@ -1,5 +1,5 @@
 const express = require("express");
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 app = express();
 const cors = require("cors");
 
@@ -7,98 +7,26 @@ const db = require("./db");
 app.use(cors());
 app.use(express.json());
 
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 app.use(bodyParser.json());
 
 const bcrypt = require("bcrypt");
 
-doctorRoutes = require('./controllers/doctor');
-testRoutes = require('./controllers/test');
-registationRoutes = require('./controllers/registation');
-locationRoutes = require('./controllers/location');
-packageRoutes = require('./controllers/packeg');
-admisionRoutes = require('./controllers/admision');
-pathologyRoutes = require('./controllers/pathology');
-bedRoutes = require('./controllers/bed');
-medicineRoutes = require('./controllers/medicine');
-staffRoutes = require('./controllers/staff')
+doctorRoutes = require("./controllers/doctor");
+testRoutes = require("./controllers/test");
+registationRoutes = require("./controllers/registation");
+locationRoutes = require("./controllers/location");
+packageRoutes = require("./controllers/packeg");
+admisionRoutes = require("./controllers/admision");
+pathologyRoutes = require("./controllers/pathology");
+bedRoutes = require("./controllers/bed");
+medicineRoutes = require("./controllers/medicine");
+staffRoutes = require("./controllers/staff");
+outdoreUserRoutes = require("./controllers/outdoreUser");
+outdoreRegistationRoutes = require("./controllers/outdoreRegistation");
 
 app.get("/", (req, res) => {
   res.send("hellow");
-});
-
-
-//fatch data
-app.get("/api/appointment", async (req, res) => {
-  await db
-    .query("SELECT * FROM appointment ")
-    .then((data) => res.send(data))
-    .catch((err) => console.log(err));
-});
-
-// create appointment data
-app.post("/api/createappointment", (req, res) => {
-  const {
-    mobilenumber,
-    name,
-    location,
-    age,
-    symptomsdescription,
-    durationofsymptoms,
-    medicalhistory,
-    medications,
-    allergies,
-    previoustreatments,
-    frequencyandintensity,
-    associatedfactors,
-    emergencycontactname,
-    emergencycontactphone,
-    additionalcomments,
-  } = req.body;
-
-  const sqlInsert =
-    "INSERT INTO appointment (mobilenumber, name, location, age, symptomsdescription, durationofsymptoms, medicalhistory, medications, allergies, previoustreatments, frequencyandintensity, associatedfactors, emergencycontactname, emergencycontactphone, additionalcomments) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-  db.query(
-    sqlInsert,
-    [
-      mobilenumber,
-      name,
-      location,
-      age,
-      symptomsdescription,
-      durationofsymptoms,
-      medicalhistory,
-      medications,
-      allergies,
-      previoustreatments,
-      frequencyandintensity,
-      associatedfactors,
-      emergencycontactname,
-      emergencycontactphone,
-      additionalcomments,
-    ],
-    (error, result) => {
-      if (error) {
-        console.error("Error inserting data:", error);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Appointment Created");
-      }
-    }
-  );
-});
-
-//book remove
-app.delete("/api/removeappointment/:id", (req, res) => {
-  const { id } = req.params;
-  const sqlRemove = "DELETE FROM appointment WHERE id = ?";
-  db.query(sqlRemove, id, (error, result) => {
-    if (error) {
-      console.log(error);
-    }
-  });
 });
 
 //outdoreuser login
@@ -131,184 +59,52 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-//doctor master
+//doctor
 
-//----------------doctor----------------------//
+app.use("/api/doctor", doctorRoutes);
 
-app.use('/api/doctor', doctorRoutes)
+//test
 
-//------------------test---------------------//
+app.use("/api/test", testRoutes);
 
-app.use('/api/test', testRoutes)
+//registation
 
-//=======================registation=================================\\
+app.use("/api/registation", registationRoutes);
 
-app.use('/api/registation', registationRoutes)
+//Location
 
-//=======================Location=================================\\
+app.use("/api/location", locationRoutes);
 
-app.use('/api/location', locationRoutes)
+//packeg
 
-//--------------------packeg---------------------//
+app.use("/api/packeg", packageRoutes);
 
-app.use('/api/packeg', packageRoutes)
+//admision
+app.use("/api/admission", admisionRoutes);
 
-//---------------admision-----------------------------------//
+//pathology
 
-app.use('/api/admission', admisionRoutes)
+app.use("/api/pathology", pathologyRoutes);
 
+//BED MASTER
 
-//--------------pathology--------------------------//
+app.use("/api/bed", bedRoutes);
 
-app.use('/api/pathology', pathologyRoutes)
+// Medicine
 
+app.use("/api/product", medicineRoutes);
 
-//========================================BED MASTER =======================================\\
+//  STAFF MASTER
 
-app.use('/api/bed', bedRoutes)
+app.use("/api/staff", staffRoutes);
 
-//===================================Medicine==========================================\\
+//outdoreuser
 
-app.use('/api/product', medicineRoutes)
+app.use("/api/outdoreuser", outdoreUserRoutes);
 
-//  ======================================STAFF MASTER ====================================\\
+//outdoreregistaion
 
-app.use('/api/staff', staffRoutes)
-
-///---------------outdoreuser----------------------//
-
-//fatch outdore user
-app.get("/api/outdoreuser", async (req, res) => {
-  await db
-    .query("SELECT * FROM outdoreuser ")
-    .then((data) => res.send(data))
-    .catch((err) => console.log(err));
-});
-
-//create outdore user
-// app.post("/api/createoutdoreuser", (req, res) => {
-//   const { email, password, location } = req.body;
-
-//   const sqlInsert =
-//     "INSERT INTO outdoreuser (email, password, location) VALUES(?, ?, ?)";
-
-//   db.query(sqlInsert, [email, password, location], (error, result) => {
-//     if (error) {
-//       console.error("Error inserting data:", error);
-//       res.status(500).send("Error inserting data into database");
-//     } else {
-//       console.log("Data inserted successfully");
-//       res.status(200).send("Doctor Created");
-//     }
-//   });
-// });
-
-app.post('/api/createoutdoreuser', async (req, res) => {
-  const { email, password } = req.body;
-  
-  // Hash the password
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Insert user into database
-  db.query('INSERT INTO outdoreuser (email, password) VALUES (?, ?)', [email, hashedPassword], (err, result) => {
-    if (err) {
-      res.status(500).send('Error registering user');
-    } else {
-      res.status(201).send('User registered successfully');
-    }
-  });
-});
-
-//outdoreuser remove
-app.delete("/api/removeoutdoreuser/:id", (req, res) => {
-  const { id } = req.params;
-  const sqlRemove = "DELETE FROM outdoreuser WHERE id = ?";
-  db.query(sqlRemove, id, (error, result) => {
-    if (error) {
-      console.log(error);
-    }
-  });
-});
-
-
-//-----------------------outdoreregistaion-----------------------//
-
-//fatch data
-app.get("/api/outdoreregistation", async (req, res) => {
-  await db
-    .query("SELECT * FROM outdore_registation ")
-    .then((data) => res.send(data))
-    .catch((err) => console.log(err));
-});
-
-//crete Outdore-registation
-app.post("/api/createoutdoreregistation", (req, res) => {
-  const {
-    date,
-    time,
-    patiantname,
-    address,
-    image,
-    mobilenumber,
-    guardianname,
-    guardiannumber,
-    doctorname,
-    sex,
-    age,
-  } = req.body;
-  // const imageBuffer = Buffer.from(image, 'base64');
-
-  const currentDate = new Date();
-  const formattedDate = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-  const currentTime = currentDate.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  }); // Format: HH:MM
-  const sqlInsert =
-    "INSERT INTO outdore_registation (  date, time, patiantname, address, image, mobilenumber, guardianname, guardiannumber, doctorname, sex, age ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  )";
-
-  db.query(
-    sqlInsert,
-    [
-      date,
-      time,
-      patiantname,
-      address,
-      image,
-      mobilenumber,
-      guardianname,
-      guardiannumber,
-      doctorname,
-      sex,
-      age,
-    ],
-    (error, result) => {
-      if (error) {
-        console.error("Error inserting data:", error);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Doctor Created");
-      }
-    }
-  );
-});
-
-//remove outdoreregistaion data
-app.delete("/api/removeoutdoreregistaion/:id", (req, res) => {
-  const { id } = req.params;
-  const sqlRemove = "DELETE FROM outdore_registation WHERE id = ?";
-  db.query(sqlRemove, id, (error, result) => {
-    if (error) {
-      console.log(error);
-    }
-  });
-});
-
-
-
-
-
+app.use("/api/outdoreregistation", outdoreRegistationRoutes);
 
 app.get("/purchase", async (req, res) => {
   try {
@@ -335,39 +131,64 @@ app.get("/api/purchase", async (req, res) => {
 });
 
 //create purches
-app.post("/api/createpurches", (req, res) => {                            
-  const { EntryID, PurchaseInvNo, InvDate, PartyInvNo, EntryType, VendorCode, VendorName } = req.body;
+app.post("/api/createpurches", (req, res) => {
+  const {
+    EntryID,
+    PurchaseInvNo,
+    InvDate,
+    PartyInvNo,
+    EntryType,
+    VendorCode,
+    VendorName,
+  } = req.body;
   console.log(req.body);
-  const sqlInsert = "INSERT INTO purchaseentry ( EntryID, PurchaseInvNo, InvDate, PartyInvNo, EntryType, VendorCode, VendorName) VALUES(?, ?, ?, ?, ?, ?, ?)";
+  const sqlInsert =
+    "INSERT INTO purchaseentry ( EntryID, PurchaseInvNo, InvDate, PartyInvNo, EntryType, VendorCode, VendorName) VALUES(?, ?, ?, ?, ?, ?, ?)";
 
-  db.query(sqlInsert, [EntryID, PurchaseInvNo, InvDate, PartyInvNo, EntryType, VendorCode, VendorName], (error, result) => {
-    if (error) {
-      console.error("Error inserting data:", error);
-      res.status(500).send("Error inserting data into database");
-    } else {
-      console.log("Data inserted successfully");
-      res.status(200).send("bed  Created");
+  db.query(
+    sqlInsert,
+    [
+      EntryID,
+      PurchaseInvNo,
+      InvDate,
+      PartyInvNo,
+      EntryType,
+      VendorCode,
+      VendorName,
+    ],
+    (error, result) => {
+      if (error) {
+        console.error("Error inserting data:", error);
+        res.status(500).send("Error inserting data into database");
+      } else {
+        console.log("Data inserted successfully");
+        res.status(200).send("bed  Created");
+      }
     }
-  });
+  );
 });
 
 //=========================================Batch Number=======================================\\
-
-
 app.post("/api/createbatch", (req, res) => {
-  const { inout, docno, productcode, batchno, slno, mfgdate, expdate, qty } = req.body;
+  const { inout, docno, productcode, batchno, slno, mfgdate, expdate, qty } =
+    req.body;
   console.log(req.body);
-  const sqlInsert = "INSERT INTO whbatch ( `inout`, docno, productcode, batchno, slno, mfgdate, expdate, qty) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+  const sqlInsert =
+    "INSERT INTO whbatch ( `inout`, docno, productcode, batchno, slno, mfgdate, expdate, qty) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 
-  db.query(sqlInsert, [inout, docno, productcode, batchno, slno, mfgdate, expdate, qty], (error, result) => {
-    if (error) {
-      console.error("Error inserting data:", error);
-      res.status(500).send("Error inserting data into database");
-    } else {
-      console.log("Data inserted successfully");
-      res.status(200).send("Batch  Created");
+  db.query(
+    sqlInsert,
+    [inout, docno, productcode, batchno, slno, mfgdate, expdate, qty],
+    (error, result) => {
+      if (error) {
+        console.error("Error inserting data:", error);
+        res.status(500).send("Error inserting data into database");
+      } else {
+        console.log("Data inserted successfully");
+        res.status(200).send("Batch  Created");
+      }
     }
-  })
+  );
 });
 
 db.query("SELECT 1")
