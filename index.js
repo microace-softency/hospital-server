@@ -24,6 +24,7 @@ medicineRoutes = require("./controllers/medicine");
 staffRoutes = require("./controllers/staff");
 outdoreUserRoutes = require("./controllers/outdoreUser");
 outdoreRegistationRoutes = require("./controllers/outdoreRegistation");
+purchaseRoutes = require('./controllers/purchases');
 
 app.get("/", (req, res) => {
   res.send("hellow");
@@ -91,82 +92,35 @@ app.use("/api/pathology", pathologyRoutes);
 app.use("/api/bed", bedRoutes);
 
 // Medicine
-
 app.use("/api/product", medicineRoutes);
 
 //  STAFF MASTER
-
 app.use("/api/staff", staffRoutes);
 
 //outdoreuser
-
 app.use("/api/outdoreuser", outdoreUserRoutes);
 
 //outdoreregistaion
 
 app.use("/api/outdoreregistation", outdoreRegistationRoutes);
 
-app.get("/purchase", async (req, res) => {
-  try {
-    const sqlInsert =
-      "INSERT INTO purchase ( grndate, pono, partyinvno, invdate, rate, vendorcode, vendorname) VALUES('17/04/2024', '6', '26874', '09/03/2023', '532', '963258', 'rum')";
-    const result = await db.query(sqlInsert);
-    console.log("result", result);
-    res.send("purchase successfull");
-  } catch (error) {
-    console.error("error", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
+// app.get("/purchase", async (req, res) => {
+//   try {
+//     const sqlInsert =
+//       "INSERT INTO purchase ( grndate, pono, partyinvno, invdate, rate, vendorcode, vendorname) VALUES('17/04/2024', '6', '26874', '09/03/2023', '532', '963258', 'rum')";
+//     const result = await db.query(sqlInsert);
+//     console.log("result", result);
+//     res.send("purchase successfull");
+//   } catch (error) {
+//     console.error("error", error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
 
-//=========================================purches=======================================\\
+//purches
 
-//fatch purches data
+app.use("/api/purchase", purchaseRoutes);
 
-app.get("/api/purchase", async (req, res) => {
-  await db
-    .query("SELECT * FROM purchase ")
-    .then((data) => res.send(data))
-    .catch((err) => console.log(err));
-});
-
-//create purches
-app.post("/api/createpurches", (req, res) => {
-  const {
-    EntryID,
-    PurchaseInvNo,
-    InvDate,
-    PartyInvNo,
-    EntryType,
-    VendorCode,
-    VendorName,
-  } = req.body;
-  console.log(req.body);
-  const sqlInsert =
-    "INSERT INTO purchaseentry ( EntryID, PurchaseInvNo, InvDate, PartyInvNo, EntryType, VendorCode, VendorName) VALUES(?, ?, ?, ?, ?, ?, ?)";
-
-  db.query(
-    sqlInsert,
-    [
-      EntryID,
-      PurchaseInvNo,
-      InvDate,
-      PartyInvNo,
-      EntryType,
-      VendorCode,
-      VendorName,
-    ],
-    (error, result) => {
-      if (error) {
-        console.error("Error inserting data:", error);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("bed  Created");
-      }
-    }
-  );
-});
 
 //=========================================Batch Number=======================================\\
 app.post("/api/createbatch", (req, res) => {
