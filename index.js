@@ -25,6 +25,7 @@ staffRoutes = require("./controllers/staff");
 outdoreUserRoutes = require("./controllers/outdoreUser");
 outdoreRegistationRoutes = require("./controllers/outdoreRegistation");
 purchaseRoutes = require('./controllers/purchases');
+batchRoutes = require('./controllers/barchNumber')
 
 app.get("/", (req, res) => {
   res.send("hellow");
@@ -104,46 +105,13 @@ app.use("/api/outdoreuser", outdoreUserRoutes);
 
 app.use("/api/outdoreregistation", outdoreRegistationRoutes);
 
-// app.get("/purchase", async (req, res) => {
-//   try {
-//     const sqlInsert =
-//       "INSERT INTO purchase ( grndate, pono, partyinvno, invdate, rate, vendorcode, vendorname) VALUES('17/04/2024', '6', '26874', '09/03/2023', '532', '963258', 'rum')";
-//     const result = await db.query(sqlInsert);
-//     console.log("result", result);
-//     res.send("purchase successfull");
-//   } catch (error) {
-//     console.error("error", error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-
 //purches
-
 app.use("/api/purchase", purchaseRoutes);
 
+//batch
+app.use("/api/batch", batchRoutes);
 
-//=========================================Batch Number=======================================\\
-app.post("/api/createbatch", (req, res) => {
-  const { inout, docno, productcode, batchno, slno, mfgdate, expdate, qty } =
-    req.body;
-  console.log(req.body);
-  const sqlInsert =
-    "INSERT INTO whbatch ( `inout`, docno, productcode, batchno, slno, mfgdate, expdate, qty) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
 
-  db.query(
-    sqlInsert,
-    [inout, docno, productcode, batchno, slno, mfgdate, expdate, qty],
-    (error, result) => {
-      if (error) {
-        console.error("Error inserting data:", error);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Batch  Created");
-      }
-    }
-  );
-});
 
 db.query("SELECT 1")
   .then((data) => {
