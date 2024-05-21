@@ -24,8 +24,8 @@ medicineRoutes = require("./controllers/medicine");
 staffRoutes = require("./controllers/staff");
 outdoreUserRoutes = require("./controllers/outdoreUser");
 outdoreRegistationRoutes = require("./controllers/outdoreRegistation");
-purchaseRoutes = require('./controllers/purchases');
-batchRoutes = require('./controllers/barchNumber')
+purchaseRoutes = require("./controllers/purchases");
+batchRoutes = require("./controllers/barchNumber");
 
 app.get("/", (req, res) => {
   res.send("hellow");
@@ -62,34 +62,27 @@ app.post("/api/login", async (req, res) => {
 });
 
 //doctor
-
 app.use("/api/doctor", doctorRoutes);
 
 //test
-
 app.use("/api/test", testRoutes);
 
 //registation
-
 app.use("/api/registation", registationRoutes);
 
 //Location
-
 app.use("/api/location", locationRoutes);
 
 //packeg
-
 app.use("/api/packeg", packageRoutes);
 
 //admision
 app.use("/api/admission", admisionRoutes);
 
 //pathology
-
 app.use("/api/pathology", pathologyRoutes);
 
 //BED MASTER
-
 app.use("/api/bed", bedRoutes);
 
 // Medicine
@@ -102,7 +95,6 @@ app.use("/api/staff", staffRoutes);
 app.use("/api/outdoreuser", outdoreUserRoutes);
 
 //outdoreregistaion
-
 app.use("/api/outdoreregistation", outdoreRegistationRoutes);
 
 //purches
@@ -110,8 +102,6 @@ app.use("/api/purchase", purchaseRoutes);
 
 //batch
 app.use("/api/batch", batchRoutes);
-
-
 
 db.query("SELECT 1")
   .then((data) => {
