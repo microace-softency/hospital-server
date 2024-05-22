@@ -13,14 +13,14 @@ router.get("/", async (req, res) => {
 
 //create doctor
 router.post("/createdoctor", (req, res) => {
-  const { doctorname, designation, fees, percentage } = req.body;
+  const {dcode, doctorname, designation, fees, percentage } = req.body;
 
   const sqlInsert =
-    "INSERT INTO doctor (doctorname,designation,fees, percentage) VALUES(?, ?, ?, ?)";
+    "INSERT INTO doctor (dcode, doctorname,designation,fees, percentage) VALUES(?, ?, ?, ?)";
 
   db.query(
     sqlInsert,
-    [doctorname, designation, fees, percentage],
+    [dcode, doctorname, designation, fees, percentage],
     (error, result) => {
       if (error) {
         console.error("Error inserting data:", error);
@@ -66,12 +66,12 @@ router.get("/:id", async (req, res) => {
 //Doctor details update
 router.put("/updatedoctor/:id", async (req, res) => {
   const { id } = req.params;
-  const { doctorname, designation, fees, percentage } = req.body;
+  const { dcode, doctorname, designation, fees, percentage } = req.body;
   const sqlUpdate =
-    "UPDATE doctor SET doctorname = ?,designation = ?,fees = ?, percentage = ?  WHERE id = ?";
+    "UPDATE doctor SET dcode = ?, doctorname = ?, designation = ?, fees = ?, percentage = ?  WHERE id = ?";
   await db.query(
     sqlUpdate,
-    [doctorname, designation, fees, percentage, id],
+    [dcode, doctorname, designation, fees, percentage, id],
     (error, result) => {
       if (error) {
         console.log(error);
