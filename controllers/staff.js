@@ -3,6 +3,13 @@ router = express.Router();
 
 const db = require("../db");
 
+const getNextStaffCode = async () => {
+  const [result] = await db.query("SELECT MAX(CAST(SUBSTRING(scode, 3) AS UNSIGNED)) AS maxCode FROM staff");
+  const maxCode = result[0].maxCode || 0; 
+  const nextCode = (maxCode + 1).toString().padStart(3, '0');
+  return `SC${nextCode}`;
+};
+
 //fatch staff
  router.get("/", async (req, res) => {
     await db
@@ -23,7 +30,9 @@ const db = require("../db");
   });
   
   //create staff
-  router.post("/createstaff", (req, res) => {
+  router.post("/createstaff",  async (req, res) => {
+    try{
+    const scode = await getNextStaffCode();
     const {
       name,
       degicnation,
@@ -32,19 +41,20 @@ const db = require("../db");
       esi,
       aadharcard,
       pancard,
-      additionalfield,
-      direction,
+      additionalfield
     } = req.body;
-  
+    
     const additionalfields = additionalfield.map((field) => field.testname).join(", ");
-    const directions = direction.map((dir) => dir.directionName).join(", ");
   
     const sqlInsert =
-    "INSERT INTO staff (name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield, direction) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    `INSERT INTO staff (
+       scode, name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   
   db.query(
     sqlInsert,
     [
+      scode,
       name,
       degicnation,
       department,
@@ -53,8 +63,9 @@ const db = require("../db");
       aadharcard,
       pancard,
       additionalfields,
-      directions,
-    ],
+    ],);
+    }
+    catch {
       (error, result) => {
         if (error) {
           console.error("Error inserting data:", error);
@@ -64,7 +75,7 @@ const db = require("../db");
           res.status(200).send("staff  Created");
         }
       }
-    );
+    }
   });
   
   //staff details view

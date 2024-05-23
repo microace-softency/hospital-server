@@ -6,7 +6,8 @@ const db = require("../db");
 const getNextProductCode = async () => {
   const [result] = await db.query("SELECT MAX(CAST(SUBSTRING(productcode, 4) AS UNSIGNED)) AS maxCode FROM productmaster");
   const maxCode = result[0].maxCode || 0; 
-  return `PRO${maxCode + 1}`;
+  const nextCode = (maxCode + 1).toString().padStart(3, '0');
+  return `PRO${nextCode}`;
 };
 
 
