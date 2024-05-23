@@ -3,6 +3,15 @@ router = express.Router();
 
 const db = require("../db");
 
+const getNextDoctorCode = async () => {
+  const [result] = await db.query(
+    "SELECT MAX(CAST(SUBSTRING(scode, 3) AS UNSIGNED)) AS maxCode FROM doctor"
+  );
+  const maxCode = result[0].maxCode || 0;
+  const nextCode = (maxCode + 1).toString().padStart(3, "0");
+  return `SC${nextCode}`;
+};
+
 //fatch doctor data
 router.get("/", async (req, res) => {
   await db
@@ -12,15 +21,17 @@ router.get("/", async (req, res) => {
 });
 
 //create doctor
-router.post("/createdoctor", (req, res) => {
-  const {dcode, doctorname, designation, fees, percentage } = req.body;
+router.post("/createdoctor", async (req, res) => {
+  try {
+    const dcode = await getNextDoctorCode();
+    const { doctorname, designation, fees, percentage } = req.body;
 
-  const sqlInsert =
-    "INSERT INTO doctor (dcode, doctorname,designation,fees, percentage) VALUES(?, ?, ?, ?)";
+    const sqlInsert = `INSERT INTO doctor 
+    (dcode, doctorname,designation,fees, percentage) 
+      VALUES(?, ?, ?, ?, ?)`;
 
-  db.query(
-    sqlInsert,
-    [dcode, doctorname, designation, fees, percentage],
+    db.query(sqlInsert, [dcode, doctorname, designation, fees, percentage]);
+  } catch {
     (error, result) => {
       if (error) {
         console.error("Error inserting data:", error);
@@ -29,8 +40,8 @@ router.post("/createdoctor", (req, res) => {
         console.log("Data inserted successfully");
         res.status(200).send("Doctor Created");
       }
-    }
-  );
+    };
+  }
 });
 
 //book doctor
