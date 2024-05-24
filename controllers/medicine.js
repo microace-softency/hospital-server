@@ -10,6 +10,15 @@ const getNextProductCode = async () => {
   return `PRO${nextCode}`;
 };
 
+router.get("/nextproductcode", async (req, res) => {
+  try {
+    const nextProductCode = await getNextProductCode();
+    res.json({ productCode: nextProductCode });
+  } catch (error) {
+    console.error("Error generating next product code:", error);
+    res.status(500).json({ error: "Error generating next product code" });
+  }
+});
 
 // Fetch data
 router.get("/", async (req, res) => {
