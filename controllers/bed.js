@@ -3,6 +3,25 @@ router = express.Router();
 
 const db = require("../db");
 
+const getNextBedCode = async () => {
+  const [result] = await db.query(
+    "SELECT MAX(CAST(SUBSTRING(bedcode, 3) AS UNSIGNED)) AS maxCode FROM bed"
+  );
+  const maxCode = result[0].maxCode || 0;
+  const nextCode = (maxCode + 1).toString().padStart(3, "0");
+  return `BC${nextCode}`;
+};
+
+router.get("/nextbedcode", async (req, res) => {
+  try {
+    const nextBedCode = await getNextBedCode();
+    res.json({ BedCode: nextBedCode });
+  } catch (error) {
+    console.error("Error generating next Bed code:", error);
+    res.status(500).json({ error: "Error generating next Bed code" });
+  }
+});
+
 //fatch bed
 router.get("/", async (req, res) => {
     await db
@@ -23,20 +42,19 @@ router.get("/", async (req, res) => {
   });
   
   //create bed
-  router.post("/createbed", (req, res) => {
+  router.post("/createbed", async(req, res) => {
+    try{
+      const BedCode = await getNextBedCode()
     const { bedname, type } = req.body;
   
-    const sqlInsert = "INSERT INTO bed ( bedname, type) VALUES(?, ?)";
+    const sqlInsert = "INSERT INTO bed (bedcode, bedname, type) VALUES(?, ?, ?)";
   
-    db.query(sqlInsert, [bedname, type], (error, result) => {
-      if (error) {
-        console.error("Error inserting data:", error);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("bed  Created");
-      }
-    });
+    db.query(sqlInsert, [BedCode, bedname, type]);
+    res.status(200).send("Location Created");
+  } catch (error) {
+    console.error("Error inserting data:", error);
+    res.status(500).send("Error inserting data into database");
+  }
   });
   
   //Bed details view
