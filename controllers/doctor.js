@@ -5,12 +5,22 @@ const db = require("../db");
 
 const getNextDoctorCode = async () => {
   const [result] = await db.query(
-    "SELECT MAX(CAST(SUBSTRING(scode, 3) AS UNSIGNED)) AS maxCode FROM doctor"
+    "SELECT MAX(CAST(SUBSTRING(dcode, 3) AS UNSIGNED)) AS maxCode FROM doctor"
   );
   const maxCode = result[0].maxCode || 0;
   const nextCode = (maxCode + 1).toString().padStart(3, "0");
-  return `SC${nextCode}`;
+  return `DC${nextCode}`;
 };
+
+router.get("/nextdoctorcode", async (req, res) => {
+  try {
+    const nextDoctorCode = await getNextDoctorCode();
+    res.json({ DoctorCode: nextDoctorCode });
+  } catch (error) {
+    console.error("Error generating next Doctor code:", error);
+    res.status(500).json({ error: "Error generating next Doctor code" });
+  }
+});
 
 //fatch doctor data
 router.get("/", async (req, res) => {
@@ -23,28 +33,28 @@ router.get("/", async (req, res) => {
 //create doctor
 router.post("/createdoctor", async (req, res) => {
   try {
-    const dcode = await getNextDoctorCode();
+    const DoctorCode = await getNextDoctorCode();
     const { doctorname, designation, fees, percentage } = req.body;
 
-    const sqlInsert = `INSERT INTO doctor 
-    (dcode, doctorname,designation,fees, percentage) 
-      VALUES(?, ?, ?, ?, ?)`;
+    const sqlInsert = `INSERT INTO doctor (
+      dcode, doctorname,designation,fees, percentage
+      ) VALUES(?, ?, ?, ?, ?)`;
 
-    db.query(sqlInsert, [dcode, doctorname, designation, fees, percentage]);
-  } catch {
-    (error, result) => {
-      if (error) {
-        console.error("Error inserting data:", error);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Doctor Created");
-      }
-    };
+    await db.query(sqlInsert, [
+      DoctorCode,
+      doctorname,
+      designation,
+      fees,
+      percentage,
+    ]);
+    res.status(200).send("Doctor Created");
+  } catch (error) {
+    console.error("Error inserting data:", error);
+    res.status(500).send("Error inserting data into database");
   }
 });
 
-//book doctor
+//remove doctor
 router.delete("/removedoctor/:id", (req, res) => {
   const { id } = req.params;
   const sqlRemove = "DELETE FROM doctor WHERE id = ?";
