@@ -5,11 +5,11 @@ const db = require("../db");
 
 const getNextPackegCode = async () => {
   const [result] = await db.query(
-    "SELECT MAX(CAST(SUBSTRING(scode, 3) AS UNSIGNED)) AS maxCode FROM packeg"
+    "SELECT MAX(CAST(SUBSTRING(pcode, 3) AS UNSIGNED)) AS maxCode FROM packeg"
   );
   const maxCode = result[0].maxCode || 0;
   const nextCode = (maxCode + 1).toString().padStart(3, "0");
-  return `SC${nextCode}`;
+  return `PK${nextCode}`;
 };
 
 //fatch packeg
@@ -34,24 +34,18 @@ router.delete("/removeapackeg/:id", (req, res) => {
 //create packeg
 router.post("/createpackeg", async (req, res) => {
   try {
-    const pcode = await getNextPackegCode();
+    const PackegCode = await getNextPackegCode();
     const { packegname, packegrate, packegnote } = req.body;
 
     const sqlInsert = `INSERT INTO packeg 
       (pcode, packegname, packegrate, packegnote ) 
       VALUES( ?, ?, ?, ?)`;
 
-    db.query(sqlInsert, [pcode, packegname, packegrate, packegnote]);
-  } catch {
-    (error, result) => {
-      if (error) {
-        console.error("Error inserting data:", error);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Packeg Created");
-      }
-    };
+   await db.query(sqlInsert, [PackegCode, packegname, packegrate, packegnote]);
+    res.status(200).send("Packeg Created");
+  } catch (error) {
+    console.error("Error inserting data:", error);
+    res.status(500).send("Error inserting data into database");
   }
 });
 

@@ -79,9 +79,9 @@ router.get("/", async (req, res) => {
   //Bed details update
   router.put("/updatebed/:id", async(req, res)=>{
     const{id}= req.params;
-    const{bedname, type }= req.body
-    const sqlUpdate = "UPDATE bed SET bedname = ?, type = ?  WHERE id = ?";
-    await db.query(sqlUpdate, [bedname, type,  id], (error, result ) =>{
+    const{dcode,bedname, type }= req.body
+    const sqlUpdate = "UPDATE bed SET dcode = ?, bedname = ?, type = ?  WHERE id = ?";
+    await db.query(sqlUpdate, [dcode, bedname, type,  id], (error, result ) =>{
       if (error) {
         console.log(error);
       }
