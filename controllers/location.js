@@ -12,6 +12,16 @@ const getNextLocationCode = async () => {
   return `LC${nextCode}`;
 };
 
+router.get("/nextlocationcode", async (req, res) => {
+  try {
+    const nextLocationCode = await getNextLocationCode();
+    res.json({ LocationCode: nextLocationCode });
+  } catch (error) {
+    console.error("Error generating next Location code:", error);
+    res.status(500).json({ error: "Error generating next Location code" });
+  }
+});
+
 //fatch location data
 router.get("/", async (req, res) => {
   await db
@@ -23,24 +33,18 @@ router.get("/", async (req, res) => {
 //crete location
 router.post("/createlocation", async (req, res) => {
   try {
-    const lcode = await getNextLocationCode()
+    const LocationCode = await getNextLocationCode();
     const { address, district, pincode, postoffice } = req.body;
 
     const sqlInsert = `INSERT INTO location 
       (lcode, address, district, pincode, postoffice) 
       VALUES(?, ?, ?, ?, ?)`;
 
-    db.query(sqlInsert, [ lcode ,address, district, pincode, postoffice]);
-  } catch {
-    (error, result) => {
-      if (error) {
-        console.error("Error inserting data:", error);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Locatio Created");
-      }
-    };
+    await db.query(sqlInsert, [LocationCode, address, district, pincode, postoffice]);
+    res.status(200).send("Location Created");
+  } catch (error) {
+    console.error("Error inserting data:", error);
+    res.status(500).send("Error inserting data into database");
   }
 });
 
