@@ -3,6 +3,15 @@ router = express.Router();
 
 const db = require("../db");
 
+const getNextTestCode = async () => {
+  const [result] = await db.query(
+    "SELECT MAX(CAST(SUBSTRING(tcode, 3) AS UNSIGNED)) AS maxCode FROM test"
+  );
+  const maxCode = result[0].maxCode || 0;
+  const nextCode = (maxCode + 1).toString().padStart(3, "0");
+  return `TC${nextCode}`;
+};
+
 //fatch test data
 router.get("/", async (req, res) => {
     await db
@@ -23,21 +32,23 @@ router.get("/", async (req, res) => {
   });
   
   //create test data
-  router.post("/createtest", (req, res) => {
+  router.post("/createtest", async(req, res) => {
+    try{
+    const TestCode = await getNextTestCode()
     const { testname, amount, day } = req.body;
   
     const sqlInsert =
-      "INSERT INTO test (  testname, amount, day) VALUES(?, ?, ?)";
+      `INSERT INTO test ( 
+        tcode, testname, amount, day
+        ) VALUES (?, ?, ?, ?)`;
   
-    db.query(sqlInsert, [testname, amount, day], (error, result) => {
-      if (error) {
-        console.error("Error inserting data:", error);
-        res.status(500).send("Error inserting data into database");
-      } else {
-        console.log("Data inserted successfully");
-        res.status(200).send("Test Created");
-      }
-    });
+    await db.query(sqlInsert, [TestCode, testname, amount, day]);
+    res.status(200).send("Test Created");
+
+    } catch (error){
+      console.error("Error inserting data:", error);
+      res.status(500).send("Error inserting data into database");
+    }
   });
   
   //Test details view
