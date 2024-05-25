@@ -100,9 +100,9 @@ const getNextStaffCode = async () => {
   //staff details update
   router.put("/updatestaff/:id", async(req, res)=>{
     const{id}= req.params;
-    const{name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield, direction }= req.body
-    const sqlUpdate = "UPDATE staff SET name = ? , degicnation = ? , department = ? , pf = ? , esi = ? , aadharcard = ? , pancard = ? , additionalfield = ? , direction = ? WHERE id = ?";
-    await db.query(sqlUpdate, [name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield, direction , id], (error, result ) =>{
+    const{scode, name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield }= req.body
+    const sqlUpdate = "UPDATE staff SET scode = ?, name = ? , degicnation = ? , department = ? , pf = ? , esi = ? , aadharcard = ? , pancard = ? , additionalfield = ?  WHERE id = ?";
+    await db.query(sqlUpdate, [scode, name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield , id], (error, result ) =>{
       if (error) {
         console.log(error);
       }

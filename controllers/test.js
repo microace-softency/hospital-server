@@ -2,7 +2,7 @@ const express = require("express");
 router = express.Router();
 
 const db = require("../db");
-
+//helper fuction
 const getNextTestCode = async () => {
   const [result] = await db.query(
     "SELECT MAX(CAST(SUBSTRING(tcode, 3) AS UNSIGNED)) AS maxCode FROM test"

@@ -71,12 +71,14 @@ router.get("/:id", async (req, res) => {
 //packeg details update
 router.put("/updatepackeg/:id", async (req, res) => {
   const { id } = req.params;
-  const { packegname, packegrate, packegnote } = req.body;
+  const {pcode, packegname, packegrate, packegnote } = req.body;
+  console.log(req.body);
+
   const sqlUpdate =
-    "UPDATE packeg SET packegname = ?, packegrate = ?, packegnote = ? WHERE id = ?";
+    "UPDATE packeg SET pcode = ?, packegname = ?, packegrate = ?, packegnote = ? WHERE id = ?";
   await db.query(
     sqlUpdate,
-    [packegname, packegrate, packegnote, id],
+    [pcode, packegname, packegrate, packegnote, id],
     (error, result) => {
       if (error) {
         console.log(error);

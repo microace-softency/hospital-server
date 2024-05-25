@@ -81,12 +81,12 @@ router.get("/:id", async (req, res) => {
 //location details update
 router.put("/updatelocation/:id", async (req, res) => {
   const { id } = req.params;
-  const { address, district, pincode, pos, postoffice } = req.body;
+  const { address, district, pincode, postoffice } = req.body;
   const sqlUpdate =
-    "UPDATE location SET address = ?, district = ?, pincode = ?, pos = ?, postoffice = ?  WHERE id = ?";
+    "UPDATE location SET address = ?, district = ?, pincode = ?, postoffice = ?  WHERE id = ?";
   await db.query(
     sqlUpdate,
-    [address, district, pincode, pos, postoffice, id],
+    [address, district, pincode, postoffice, id],
     (error, result) => {
       if (error) {
         console.log(error);
