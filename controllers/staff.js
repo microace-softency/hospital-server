@@ -10,6 +10,16 @@ const getNextStaffCode = async () => {
   return `SC${nextCode}`;
 };
 
+router.get("/nextstaffcode", async (req, res) => {
+  try {
+    const nextStaffCode = await getNextStaffCode();
+    res.json({ StaffCode: nextStaffCode });
+  } catch (error) {
+    console.error("Error generating next Staff code:", error);
+    res.status(500).json({ error: "Error generating next Staff code" });
+  }
+});
+
 //fatch staff
  router.get("/", async (req, res) => {
     await db
