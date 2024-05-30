@@ -5,8 +5,7 @@ const db = require("../db");
 
 //create batch
 app.post("/api/createbatch", (req, res) => {
-    const { inout, docno, productcode, batchno, slno, mfgdate, expdate, qty } =
-      req.body;
+    const { inout, docno, productcode, batchno, slno, mfgdate, expdate, qty } = req.body;
     console.log(req.body);
     const sqlInsert =
       "INSERT INTO whbatch ( `inout`, docno, productcode, batchno, slno, mfgdate, expdate, qty) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
