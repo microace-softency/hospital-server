@@ -88,7 +88,7 @@ app.use("/api/bed", bedRoutes);
 // Medicine
 app.use("/api/product", medicineRoutes);
 
-//  STAFF MASTER
+//STAFF MASTER
 app.use("/api/staff", staffRoutes);
 
 //outdoreuser
