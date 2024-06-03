@@ -76,17 +76,47 @@ router.post("/createpurches", async (req, res) => {
   }
 });
 
+// view purchase data by ID
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [[purchase]] = await db.query("SELECT * FROM purchase WHERE PurchaseID = ?", [id]);
+    if (!purchase) {
+      return res.status(404).send("Purchase not found");
+    }
+
+    const [items] = await db.query("SELECT * FROM purchase_items WHERE PurchaseID = ?", [id]);
+
+    res.send({ ...purchase, items });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Error fetching data from database");
+  }
+});
+
 // Remove purchase
 router.delete("/removepurches/:id", async (req, res) => {
   const { id } = req.params;
-  const sqlRemove = "DELETE FROM purchase WHERE id = ?";
+
+  const sqlRemoveItems = "DELETE FROM purchase_items WHERE PurchaseID = ?";
+  const sqlRemovePurchase = "DELETE FROM purchase WHERE PurchaseID = ?";
+
+  const connection = await db.getConnection(); // Get a connection from the pool
+  await connection.beginTransaction(); // Start a new transaction
 
   try {
-    await db.query(sqlRemove, [id]);
+    await connection.query(sqlRemoveItems, [id]); // Remove related items first
+    await connection.query(sqlRemovePurchase, [id]); // Then remove the purchase
+
+    await connection.commit(); // Commit the transaction
     res.status(200).send("Purchase deleted");
   } catch (error) {
-    console.log(error);
+    await connection.rollback(); // Rollback the transaction in case of error
+    console.error("Error deleting data:", error);
     res.status(500).send("Error deleting data");
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 });
 
