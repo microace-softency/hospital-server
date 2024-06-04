@@ -3,6 +3,27 @@ router = express.Router();
 
 const db = require("../db");
 
+//helperfunction crearte registion code
+const getNextRegistationCode = async () => {
+  const [result] = await db.query(
+    "SELECT MAX(CAST(SUBSTRING(rpcode, 3) AS UNSIGNED)) AS maxCode FROM registation"
+  );
+  const maxCode = result[0].maxCode || 0;
+  const nextCode = (maxCode + 1).toString().padStart(3, "0");
+  return `RP${nextCode}`;
+};
+
+//next registation code create 
+router.get("/nexregistationcode", async (req, res) => {
+  try {
+    const nextRegistationCode = await getNextRegistationCode();
+    res.json({ RegistationCode: nextRegistationCode });
+  } catch (error) {
+    console.error("Error generating next Registation code:", error);
+    res.status(500).json({ error: "Error generating next Registation code" });
+  }
+});
+
   
   //registation data fatch
   router.get("/", async (req, res) => {
@@ -13,7 +34,8 @@ const db = require("../db");
   });
   
   //crete registation
-  router.post("/createregistation", (req, res) => {
+  router.post("/createregistation", async(req, res) => {
+    const RegistationCode = await getNextRegistationCode()
     const {
       date,
       location,
@@ -29,7 +51,6 @@ const db = require("../db");
       guardianname,
       guardiannumber,
     } = req.body;
-    // const imageBuffer = Buffer.from(image, 'base64');
   
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
@@ -38,11 +59,12 @@ const db = require("../db");
       minute: "2-digit",
     }); // Format: HH:MM
     const sqlInsert =
-      "INSERT INTO registation ( date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  )";
+      "INSERT INTO registation ( rpcode ,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  )";
   
     db.query(
       sqlInsert,
       [
+        RegistationCode,
         date,
         location,
         name,
