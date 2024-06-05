@@ -103,9 +103,11 @@ app.use("/api/purchase", purchaseRoutes);
 //batch
 app.use("/api/batch", batchRoutes);
 
+const port = process.env.PORT || 8005;
+
 db.query("SELECT 1")
   .then((data) => {
     console.log("db Cpnnection succeeded", data);
-    app.listen(8005, () => console.log("server started at 8005"));
+    app.listen(port, () => console.log("server started at 8005"));
   })
   .catch((err) => console.log("db connection failed. \n" + err));
