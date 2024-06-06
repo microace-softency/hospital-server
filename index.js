@@ -20,6 +20,7 @@ packageRoutes = require("./controllers/packeg");
 admisionRoutes = require("./controllers/admision");
 pathologyRoutes = require("./controllers/pathology");
 bedRoutes = require("./controllers/bed");
+departmentRoutes = require("./controllers/department");
 medicineRoutes = require("./controllers/medicine");
 staffRoutes = require("./controllers/staff");
 outdoreUserRoutes = require("./controllers/outdoreUser");
@@ -84,6 +85,9 @@ app.use("/api/pathology", pathologyRoutes);
 
 //BED MASTER
 app.use("/api/bed", bedRoutes);
+
+//DEPARTMENT MASTER
+app.use("/api/department", departmentRoutes);
 
 // Medicine
 app.use("/api/product", medicineRoutes);
