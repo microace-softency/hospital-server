@@ -23,7 +23,7 @@ router.get("/nextdepartmentcode", async (req, res) => {
 });
 
 //fatch department
-router.get("/", async (req, res) => {
+  router.get("/", async (req, res) => {
     await db
       .query("SELECT * FROM department ")
       .then((data) => res.send(data))

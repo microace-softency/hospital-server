@@ -26,6 +26,7 @@ staffRoutes = require("./controllers/staff");
 outdoreUserRoutes = require("./controllers/outdoreUser");
 outdoreRegistationRoutes = require("./controllers/outdoreRegistation");
 purchaseRoutes = require("./controllers/purchases");
+purchaseIssueRoutes = require("./controllers/purchasesIssue");
 batchRoutes = require("./controllers/barchNumber");
 
 app.get("/", (req, res) => {
@@ -103,6 +104,9 @@ app.use("/api/outdoreregistation", outdoreRegistationRoutes);
 
 //purches
 app.use("/api/purchase", purchaseRoutes);
+
+//purches Issue
+app.use("/api/purchaseissue", purchaseIssueRoutes);
 
 //batch
 app.use("/api/batch", batchRoutes);
