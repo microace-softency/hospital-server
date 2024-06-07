@@ -84,3 +84,50 @@ router.get("/", async (req, res) => {
   });
 
 module.exports = router;
+
+
+
+
+
+
+
+
+
+// const express = require('express');
+// const pool = require('../db');
+// const router = express.Router();
+
+// // Route to create a test with subgroups
+// router.post('/createtest', async (req, res) => {
+//   const { testName, subGroups } = req.body;
+
+//   if (!testName || !subGroups) {
+//     return res.status(400).send('Test name and subgroups are required');
+//   }
+
+//   try {
+//     // Insert the main test
+//     const [testResult] = await pool.execute(
+//       'INSERT INTO tests (name) VALUES (?)',
+//       [testName]
+//     );
+
+//     const testId = testResult.insertId;
+
+//     // Insert each subgroup
+//     for (const subGroup of subGroups) {
+//       await pool.execute(
+//         'INSERT INTO subgroups (test_id, name, amount) VALUES (?, ?, ?)',
+//         [testId, subGroup.name, subGroup.amount]
+//       );
+//     }
+
+//     res.status(201).send('Test created successfully');
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Server error');
+//   }
+// });
+
+// module.exports = router;
+
