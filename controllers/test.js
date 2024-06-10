@@ -3,6 +3,7 @@ router = express.Router();
 
 const db = require("../db");
 const mysqlPool = require("../db");
+
 //helper fuction
 const getNextTestCode = async () => {
   const [result] = await db.query(
@@ -84,7 +85,7 @@ router.post('/creategrouptest', async (req, res) => {
   }
 });
 
-// Get all tests (for the dropdown in frontend)
+// Get Group tests
 router.get('/grouptest', async (req, res) => {
   try {
     const [tests] = await mysqlPool.execute('SELECT * FROM tests');
@@ -101,6 +102,31 @@ router.get('/grouptest', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');
+  }
+});
+
+// Delete test by ID
+router.delete("/removegrouptest/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const sqlRemoveSubGroups = "DELETE FROM subgroups WHERE test_id = ?";
+  const sqlRemoveTest = "DELETE FROM tests WHERE id = ?";
+
+  const connection = await mysqlPool.getConnection(); // Get a connection from the pool
+  await connection.beginTransaction(); // Start a new transaction
+
+  try {
+    await connection.query(sqlRemoveSubGroups, [id]); // Remove related subgroups first
+    await connection.query(sqlRemoveTest, [id]); // Then remove the test
+
+    await connection.commit(); // Commit the transaction
+    res.status(200).send("Test and associated subgroups deleted successfully");
+  } catch (error) {
+    await connection.rollback(); // Rollback the transaction in case of error
+    console.error("Error deleting test data:", error);
+    res.status(500).send("Error deleting test data");
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 });
 
@@ -137,36 +163,4 @@ router.put("/updatetest/:id", async (req, res) => {
   });
 });
 
-module.exports = router;
-
-// // Route to create a test with subgroups
-// router.post('/createtest', async (req, res) => {
-//   const { testName, subGroups } = req.body;
-
-//   if (!testName || !subGroups) {
-//     return res.status(400).send('Test name and subgroups are required');
-//   }
-
-//   try {
-//     // Insert the main test
-//     const [testResult] = await mysqlPool.execute(
-//       'INSERT INTO tests (name) VALUES (?)',
-//       [testName]
-//     );
-
-//     const testId = testResult.insertId;
-
-//     // Insert each subgroup
-//     for (const subGroup of subGroups) {
-//       await mysqlPool.execute(
-//         'INSERT INTO subgroups (test_id, name, amount) VALUES (?, ?, ?)',
-//         [testId, subGroup.name, subGroup.amount]
-//       );
-//     }
-
-//     res.status(201).send('Test created successfully');
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Server error');
-//   }
-// });
+module.exports = router;  
