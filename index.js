@@ -28,6 +28,7 @@ outdoreRegistationRoutes = require("./controllers/outdoreRegistation");
 purchaseRoutes = require("./controllers/purchases");
 purchaseIssueRoutes = require("./controllers/purchasesIssue");
 batchRoutes = require("./controllers/barchNumber");
+salesRoutes = require("./controllers/sales");
 
 app.get("/", (req, res) => {
   res.send("hellow");
@@ -107,6 +108,9 @@ app.use("/api/purchase", purchaseRoutes);
 
 //purches Issue
 app.use("/api/purchaseissue", purchaseIssueRoutes);
+
+//Sales Issue
+app.use("/api/sales", salesRoutes);
 
 //batch
 app.use("/api/batch", batchRoutes);
