@@ -123,9 +123,9 @@ router.get("/nexregistationcode", async (req, res) => {
   //Registation details update
   router.put("/updateregistation/:id", async(req, res)=>{
     const{id}= req.params;
-    const{date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber}= req.body
-    const sqlUpdate = "UPDATE registation SET date = ?, location = ?, name = ?, image = ?, mobilenumber = ?, sex = ?, age = ?, doctorname = ?, time = ?, type = ?, price = ?, guardianname = ?, guardiannumber = ?  WHERE id = ?";
-    await db.query(sqlUpdate, [date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, id], (error, result ) =>{
+    const{rpcode,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber}= req.body
+    const sqlUpdate = "UPDATE registation SET rpcode = ?, date = ?, location = ?, name = ?, image = ?, mobilenumber = ?, sex = ?, age = ?, doctorname = ?, time = ?, type = ?, price = ?, guardianname = ?, guardiannumber = ?  WHERE id = ?";
+    await db.query(sqlUpdate, [rpcode, date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, id], (error, result ) =>{
       if (error) {
         console.log(error);
       }

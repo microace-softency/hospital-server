@@ -3,6 +3,27 @@ router = express.Router();
 
 const db = require("../db");
 
+//helperfunction crearte registion code
+const getNextRegistationCode = async () => {
+  const [result] = await db.query(
+    "SELECT MAX(CAST(SUBSTRING(orpCode, 3) AS UNSIGNED)) AS maxCode FROM outdore_registation"
+  );
+  const maxCode = result[0].maxCode || 0;
+  const nextCode = (maxCode + 1).toString().padStart(3, "0");
+  return `ORP${nextCode}`;
+};
+
+//next registation code create 
+router.get("/nexregistationcode", async (req, res) => {
+  try {
+    const nextRegistationCode = await getNextRegistationCode();
+    res.json({ RegistationCode: nextRegistationCode });
+  } catch (error) {
+    console.error("Error generating next Registation code:", error);
+    res.status(500).json({ error: "Error generating next Registation code" });
+  }
+});
+
 //fatch data
 router.get("/", async (req, res) => {
     await db
@@ -12,7 +33,8 @@ router.get("/", async (req, res) => {
   });
   
   //crete Outdore-registation
-  router.post("/createoutdoreregistation", (req, res) => {
+  router.post("/createoutdoreregistation", async(req, res) => {
+    const RegistationCode = await getNextRegistationCode()
     const {
       date,
       time,
@@ -35,11 +57,12 @@ router.get("/", async (req, res) => {
       minute: "2-digit",
     }); // Format: HH:MM
     const sqlInsert =
-      "INSERT INTO outdore_registation (  date, time, patiantname, address, image, mobilenumber, guardianname, guardiannumber, doctorname, sex, age ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  )";
+      "INSERT INTO outdore_registation (  orpCode, date, time, patiantname, address, image, mobilenumber, guardianname, guardiannumber, doctorname, sex, age ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  )";
   
     db.query(
       sqlInsert,
       [
+        RegistationCode,
         date,
         time,
         patiantname,
