@@ -3,7 +3,6 @@ const router = express.Router();
 const db = require("../db");
 
 //create sales
-
 router.post("/create", async (req, res) => {
   const {
     BillNo,
@@ -78,6 +77,50 @@ router.get("/", async (req, res) => {
     } catch (err) {
       console.log(err);
       res.status(500).send("Error fetching data from database");
+    }
+  });
+
+  // View a sale by ID
+router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const [[sale]] = await db.query("SELECT * FROM bill WHERE id = ?", [id]);
+      if (!sale) {
+        return res.status(404).send("Sale not found");
+      }
+  
+      const [items] = await db.query("SELECT * FROM Sales_item WHERE BillId = ?", [id]);
+  
+      res.send({ ...sale, items });
+    } catch (err) {
+      console.log(err);
+      res.status(500).send("Error fetching data from database");
+    }
+  });
+  
+  // Remove a sale by ID
+  router.delete("/sales/:id", async (req, res) => {
+    const { id } = req.params;
+  
+    const sqlRemoveItems = "DELETE FROM Sales_item WHERE BillId = ?";
+    const sqlRemoveSale = "DELETE FROM bill WHERE BillId = ?";
+  
+    const connection = await db.getConnection(); // Get a connection from the pool
+    await connection.beginTransaction(); // Start a new transaction
+  
+    try {
+      await connection.query(sqlRemoveItems, [id]); // Remove related items first
+      await connection.query(sqlRemoveSale, [id]); // Then remove the sale
+  
+      await connection.commit(); // Commit the transaction
+      res.status(200).send("Sale deleted");
+    } catch (error) {
+      await connection.rollback(); // Rollback the transaction in case of error
+      console.error("Error deleting data:", error);
+      res.status(500).send("Error deleting data");
+    } finally {
+      connection.release(); // Release the connection back to the pool
     }
   });
   
