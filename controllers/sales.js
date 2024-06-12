@@ -100,11 +100,11 @@ router.get("/:id", async (req, res) => {
   });
   
   // Remove a sale by ID
-  router.delete("/sales/:id", async (req, res) => {
+  router.delete("/salesremove/:id", async (req, res) => {
     const { id } = req.params;
   
     const sqlRemoveItems = "DELETE FROM Sales_item WHERE BillId = ?";
-    const sqlRemoveSale = "DELETE FROM bill WHERE BillId = ?";
+    const sqlRemoveSale = "DELETE FROM bill WHERE id = ?";
   
     const connection = await db.getConnection(); // Get a connection from the pool
     await connection.beginTransaction(); // Start a new transaction
