@@ -97,6 +97,36 @@ router.get("/", async (req, res) => {
       }
     });
   });
+
+   //Outdore pataint details view
+   router.get("/:id", async (req, res) => {
+    const { id } = req.params;
+    const sqlGet = "SELECT * FROM outdore_registation WHERE id = ?";
+    try {
+      const result = await db.query(sqlGet, id);
   
+      if (result.length === 0) {
+        res.status(404).json({ error: " not found" });
+      } else {
+        res.json(result[0]);
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  });
+  
+  //OutDoor Registation details update
+  router.put("/updateregistation/:id", async(req, res)=>{
+    const{id}= req.params;
+    const{orpCode,date, address, patiantname, image, mobilenumber, sex, age, doctorname, time, guardianname, guardiannumber}= req.body
+    const sqlUpdate = "UPDATE outdore_registation SET orpCode = ?, date = ?, address = ?, patiantname = ?, image = ?, mobilenumber = ?, sex = ?, age = ?, doctorname = ?, time = ?, guardianname = ?, guardiannumber = ?  WHERE id = ?";
+    await db.query(sqlUpdate, [orpCode, date, address, patiantname, image, mobilenumber, sex, age, doctorname, time, guardianname, guardiannumber, id], (error, result ) =>{
+      if (error) {
+        console.log(error);
+      }
+      res.send(result)
+    })
+  });
 
 module.exports = router;
