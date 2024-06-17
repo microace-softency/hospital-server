@@ -105,18 +105,33 @@ router.get("/nextstaffcode", async (req, res) => {
     }
   });
   
-  
   //staff details update
-  router.put("/updatestaff/:id", async(req, res)=>{
-    const{id}= req.params;
-    const{scode, name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield }= req.body
-    const sqlUpdate = "UPDATE staff SET scode = ?, name = ? , degicnation = ? , department = ? , pf = ? , esi = ? , aadharcard = ? , pancard = ? , additionalfield = ?  WHERE id = ?";
-    await db.query(sqlUpdate, [scode, name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield , id], (error, result ) =>{
-      if (error) {
-        console.log(error);
-      }
-      res.send(result)
-    })
+  router.put("/updatestaff/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { scode, name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield } = req.body;
+  
+      const sqlUpdate = 
+        "UPDATE staff SET scode = ?, name = ?, degicnation = ?, department = ?, pf = ?, esi = ?, aadharcard = ?, pancard = ? WHERE id = ?";
+  
+      await db.query(sqlUpdate, [scode, name, degicnation, department, pf, esi, aadharcard, pancard, id]);
+  
+      await db.query("DELETE FROM staff_additional_fields WHERE staff_id = ?", [id]);
+  
+      const additionalFieldsPromises = additionalfield.map(field => {
+        return db.query(
+          "INSERT INTO staff_additional_fields (staff_id, field_name, field_value) VALUES (?, ?, ?)",
+          [id, field.testname, field.result]
+        );
+      });
+  
+      await Promise.all(additionalFieldsPromises);
+  
+      res.status(200).send("Staff Updated");
+    } catch (error) {
+      console.error("Error updating data:", error);
+      res.status(500).send("Error updating data in the database");
+    }
   });
 
 module.exports = router;
