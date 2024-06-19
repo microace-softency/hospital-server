@@ -29,6 +29,8 @@ purchaseRoutes = require("./controllers/purchases");
 purchaseIssueRoutes = require("./controllers/purchasesIssue");
 batchRoutes = require("./controllers/barchNumber");
 salesRoutes = require("./controllers/sales");
+authRoutes = require('./controllers/login');
+
 
 app.get("/", (req, res) => {
   res.send("hellow");
@@ -114,6 +116,11 @@ app.use("/api/sales", salesRoutes);
 
 //batch
 app.use("/api/batch", batchRoutes);
+
+//login
+app.use('/api/auth', authRoutes);
+
+
 
 const port = process.env.PORT || 8005;
 
