@@ -4,7 +4,7 @@ const db = require('../db');
 require("dotenv").config();
 
 exports.login = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, email } = req.body;
 
   try {
     const [rows] = await db.execute('SELECT * FROM users WHERE username = ?', [username]);
@@ -26,7 +26,7 @@ exports.login = async (req, res) => {
       expiresIn: '1h',
     });
 
-    res.json({ token, userId: user.id });
+    res.json({ token, userId: user.id,username: user.username, email: user.email  });
   } catch (error) {
     console.error('Error during login:', error);
     res.status(500).json({ message: 'Server error' });
