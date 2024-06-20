@@ -2,6 +2,25 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 
+const getNextPurchasesCode = async () => {
+  const [result] = await db.query(
+    "SELECT MAX(CAST(SUBSTRING(PurchaseInvNo, 3) AS UNSIGNED)) AS maxCode FROM purchase"
+  );
+  const maxCode = result[0].maxCode || 0;
+  const nextCode = (maxCode + 1).toString().padStart(3, "0");
+  return `PR${nextCode}`;
+};
+
+router.get("/nextpurchasescode", async (req, res) => {
+  try {
+    const nextPurchasesCode = await getNextPurchasesCode();
+    res.json({ PurchasesCode: nextPurchasesCode });
+  } catch (error) {
+    console.error("Error generating next Purchases code:", error);
+    res.status(500).json({ error: "Error generating next Purchases code" });
+  }
+});
+
 // Fetch purchases data
 router.get("/", async (req, res) => {
   try {
@@ -15,8 +34,8 @@ router.get("/", async (req, res) => {
 
 // Create purchase
 router.post("/createpurches", async (req, res) => {
+  PurchasesCode = await getNextPurchasesCode()
   const {
-    PurchaseInvNo,
     InvDate,
     PartyInvNo,
     PurchaseInvDate,
@@ -40,7 +59,7 @@ router.post("/createpurches", async (req, res) => {
 
   try {
     const [purchaseResult] = await connection.query(sqlInsertPurchase, [
-      PurchaseInvNo,
+      PurchasesCode,
       InvDate,
       PartyInvNo,
       PurchaseInvDate,
@@ -49,7 +68,7 @@ router.post("/createpurches", async (req, res) => {
     ]);
 
     const purchaseId = purchaseResult.insertId;
-
+    
     for (const item of items) {
       await connection.query(sqlInsertItem, [
         purchaseId,
