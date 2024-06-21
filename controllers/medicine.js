@@ -59,13 +59,13 @@ router.post("/createproduct", async (req, res) => {
       buyrate,
       opening,
       expdate,
-      purchasedate,
-      batchnumber
+      batchnumber,
+      hasBatchNumber, // Add this line
     } = req.body;
 
     const sqlInsert = `
       INSERT INTO productmaster (
-        productcode, Description, purchesunit, Stock, sale, hsnsaccode, productgroup, productsubgroup, taxcategory, salerate, buyrate, opening, expdate, purchasedate, batchnumber
+        productcode, Description, purchesunit, Stock, sale, hsnsaccode, productgroup, productsubgroup, taxcategory, salerate, buyrate, opening, expdate, batchnumber, hasBatchNumber
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     await db.query(sqlInsert, [
@@ -82,8 +82,8 @@ router.post("/createproduct", async (req, res) => {
       buyrate,
       opening,
       expdate,
-      purchasedate,
-      batchnumber
+      batchnumber,
+      hasBatchNumber, // Add this line
     ]);
 
     res.status(200).send("Product created successfully with Product Code: " + productCode);
@@ -92,6 +92,7 @@ router.post("/createproduct", async (req, res) => {
     res.status(500).send("Error inserting data into database");
   }
 });
+
 
 // Product details view
 router.get("/:id", async (req, res) => {
@@ -129,13 +130,13 @@ router.put("/updateproduct/:id", async (req, res) => {
     buyrate,
     opening,
     expdate,
-    purchasedate,
-    batchnumber
+    batchnumber,
+    hasBatchNumber, // Add this line
   } = req.body;
 
   const sqlUpdate = `
     UPDATE productmaster 
-    SET productcode = ?, Description = ?, purchesunit = ?, Stock = ?, sale = ?, hsnsaccode = ?, productgroup = ?, productsubgroup = ?, taxcategory = ?, salerate = ?, buyrate = ?, opening = ?, expdate = ?, purchasedate = ?, batchnumber = ? 
+    SET productcode = ?, Description = ?, purchesunit = ?, Stock = ?, sale = ?, hsnsaccode = ?, productgroup = ?, productsubgroup = ?, taxcategory = ?, salerate = ?, buyrate = ?, opening = ?, expdate = ?, batchnumber = ?, hasBatchNumber = ? 
     WHERE id = ?`;
 
   try {
@@ -153,9 +154,9 @@ router.put("/updateproduct/:id", async (req, res) => {
       buyrate,
       opening,
       expdate,
-      purchasedate,
       batchnumber,
-      id
+      hasBatchNumber, // Add this line
+      id,
     ]);
     res.send("Product updated successfully");
   } catch (error) {
@@ -163,5 +164,6 @@ router.put("/updateproduct/:id", async (req, res) => {
     res.status(500).send("Error updating product");
   }
 });
+
 
 module.exports = router;
