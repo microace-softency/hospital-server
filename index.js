@@ -120,8 +120,6 @@ app.use("/api/batch", batchRoutes);
 //login
 app.use('/api/auth', authRoutes);
 
-
-
 const port = process.env.PORT || 8005;
 
 db.query("SELECT 1")

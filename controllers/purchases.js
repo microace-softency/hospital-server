@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
-
+ 
 const getNextPurchasesCode = async () => {
   const [result] = await db.query(
     "SELECT MAX(CAST(SUBSTRING(PurchaseInvNo, 3) AS UNSIGNED)) AS maxCode FROM purchase"
