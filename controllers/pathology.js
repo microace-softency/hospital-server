@@ -77,11 +77,13 @@ const db = require("../db");
     advancePayment,
     duePayment,
     date,
-    patientnumber
+    patientnumber,
+    patientaddress,
+    agent
   } = req.body;
 
-  const query = 'INSERT INTO pathology_records (patientname, tests, group_tests, referDrName, totalAmount, advancePayment, duePayment, date, patientnumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  db.query(query, [patientname, JSON.stringify(tests), JSON.stringify(group_tests), referDrName, totalAmount, advancePayment, duePayment, date, patientnumber], (err, result) => {
+  const query = 'INSERT INTO pathology_records (patientname, tests, group_tests, referDrName, totalAmount, advancePayment, duePayment, date, patientnumber, patientaddress, agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  db.query(query, [patientname, JSON.stringify(tests), JSON.stringify(group_tests), referDrName, totalAmount, advancePayment, duePayment, date, patientnumber, patientaddress, agent], (err, result) => {
     if (err) {
       console.error("Error creating pathology record:", err);
       res.status(500).json({ error: "Failed to create pathology record" });
