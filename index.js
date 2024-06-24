@@ -13,6 +13,7 @@ app.use(bodyParser.json());
 const bcrypt = require("bcrypt");
 
 doctorRoutes = require("./controllers/doctor");
+agentRoutes = require("./controllers/agent");
 testRoutes = require("./controllers/test");
 registationRoutes = require("./controllers/registation");
 locationRoutes = require("./controllers/location");
@@ -68,6 +69,9 @@ app.post("/api/login", async (req, res) => {
 
 //doctor
 app.use("/api/doctor", doctorRoutes);
+
+//Agent
+app.use("/api/agent", agentRoutes);
 
 //test
 app.use("/api/test", testRoutes);
