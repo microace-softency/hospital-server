@@ -115,11 +115,10 @@ router.post("/createpathology", (req, res) => {
 //pathology details view
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const sqlGet = "SELECT * FROM pathology WHERE id = ?";
+  const sqlGet = "SELECT * FROM pathology_records WHERE id = ?";
 
   try {
     const result = await db.query(sqlGet, id);
-
     if (result.length === 0) {
       res.status(404).json({ error: "Data not found" });
     } else {
@@ -131,41 +130,55 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//pathology details update
+
+// Pathology details update
 router.put("/updatepathology/:id", async (req, res) => {
   const { id } = req.params;
   const {
     patientname,
-    patientnumber,
-    testname,
+    tests,
+    group_tests,
     referDrName,
     totalAmount,
     advancePayment,
     duePayment,
     date,
+    patientnumber,
+    patientaddress,
+    agent,
   } = req.body;
+
   const sqlUpdate =
-    "UPDATE pathology SET patientname = ? , patientnumber = ? , testname = ? , referDrName = ? , totalAmount = ? , advancePayment = ? , duePayment = ? , date = ? WHERE id = ?";
-  await db.query(
-    sqlUpdate,
-    [
-      patientname,
-      patientnumber,
-      testname,
-      referDrName,
-      totalAmount,
-      advancePayment,
-      duePayment,
-      date,
-      id,
-    ],
-    (error, result) => {
-      if (error) {
-        console.log(error);
-      }
-      res.send(result);
+    "UPDATE pathology_records SET patientname = ?, tests = ?, group_tests = ?, referDrName = ?, totalAmount = ?, advancePayment = ?, duePayment = ?, date = ?, patientnumber = ?, patientaddress = ?, agent = ? WHERE id = ?";
+  
+  try {
+    const result = await db.query(
+      sqlUpdate,
+      [
+        patientname,
+        JSON.stringify(tests),
+        JSON.stringify(group_tests),
+        referDrName,
+        totalAmount,
+        advancePayment,
+        duePayment,
+        date,
+        patientnumber,
+        patientaddress,
+        agent,
+        id,
+      ]
+    );
+
+    if (result.affectedRows === 0) {
+      res.status(404).json({ error: "Data not found" });
+    } else {
+      res.json({ message: "Pathology record updated successfully" });
     }
-  );
+  } catch (error) {
+    console.error("Error updating pathology record:", error);
+    res.status(500).json({ error: "Failed to update pathology record" });
+  }
 });
 
 module.exports = router;
