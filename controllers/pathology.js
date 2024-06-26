@@ -67,7 +67,8 @@ router.delete("/removepathology/:id", (req, res) => {
 // });
 
 // Create pathology record
-router.post("/createpathology", (req, res) => {
+router.post("/createpathology", async (req, res) => {
+  try {
   const {
     patientname,
     tests,
@@ -84,8 +85,7 @@ router.post("/createpathology", (req, res) => {
 
   const query =
     "INSERT INTO pathology_records (patientname, tests, group_tests, referDrName, totalAmount, advancePayment, duePayment, date, patientnumber, patientaddress, agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-  db.query(
-    query,
+ await db.query( query,
     [
       patientname,
       JSON.stringify(tests),
@@ -98,18 +98,12 @@ router.post("/createpathology", (req, res) => {
       patientnumber,
       patientaddress,
       agent,
-    ],
-    (err, result) => {
-      if (err) {
-        console.error("Error creating pathology record:", err);
-        res.status(500).json({ error: "Failed to create pathology record" });
-      } else {
-        res
-          .status(200)
-          .json({ message: "Pathology record created successfully" });
-      }
-    }
-  );
+    ]);
+    res.status(200).send("Pathology Created");
+  } catch (error) {
+    console.error("Error inserting data:", error);
+    res.status(500).send("Error inserting data into database");
+  }
 });
 
 //pathology details view
