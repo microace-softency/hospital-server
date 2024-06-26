@@ -194,10 +194,8 @@ router.post("/createpurchase", async (req, res) => {
   await connection.beginTransaction();
 
   try {
-    // Generate next purchase code
     const PurchasesCode = await getNextPurchasesCode();
 
-    // Insert into purchase table
     const [purchaseResult] = await connection.query(
       `
       INSERT INTO purchase (PurchaseInvNo, InvDate, PartyInvNo, PurchaseInvDate, VendorCode, VendorName)
@@ -215,7 +213,6 @@ router.post("/createpurchase", async (req, res) => {
 
     const purchaseId = purchaseResult.insertId;
 
-    // Insert items into purchase_items table
     for (const item of items) {
       await connection.query(
         `
@@ -236,23 +233,29 @@ router.post("/createpurchase", async (req, res) => {
         ]
       );
 
-      // Insert batches into batches table
-      if (item.batches && item.batches.length > 0) {
-        for (const batch of item.batches) {
-          await connection.query(
-            `
-            INSERT INTO batches (PurchaseID, ProductCode, BatchNumber, ManufacturingDate, ExpiryDate, Quantity)
-            VALUES (?, ?, ?, ?, ?, ?)
-            `,
-            [
-              purchaseId,
-              item.ItemCode, // Assuming product code is related to item
-              batch.BatchNumber,
-              batch.ManufacturingDate,
-              batch.ExpiryDate,
-              batch.Quantity,
-            ]
-          );
+      if (Array.isArray(item.Batches) && item.Batches.length > 0) {
+        for (const batch of item.Batches) {
+          const { productCode, batchNumber, mfgDate, expDate, quantity } = batch;
+
+
+          if (productCode && batchNumber && mfgDate && expDate && quantity) {
+            await connection.query(
+              `
+              INSERT INTO batches (PurchaseID, ProductCode, BatchNumber, ManufacturingDate, ExpiryDate, Quantity)
+              VALUES (?, ?, ?, ?, ?, ?)
+              `,
+              [
+                purchaseId,
+                productCode,
+                batchNumber,
+                mfgDate,
+                expDate,
+                quantity,
+              ]
+            );
+          } else {
+            console.error("Batch data missing required fields:", batch);
+          }
         }
       }
     }
