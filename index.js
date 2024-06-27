@@ -31,6 +31,7 @@ purchaseIssueRoutes = require("./controllers/purchasesIssue");
 batchRoutes = require("./controllers/barchNumber");
 salesRoutes = require("./controllers/sales");
 authRoutes = require('./controllers/login');
+LedgerRoutes = require('./controllers/generalLedger');
 
 
 app.get("/", (req, res) => {
@@ -123,6 +124,9 @@ app.use("/api/batch", batchRoutes);
 
 //login
 app.use('/api/auth', authRoutes);
+
+//login
+app.use('/api/ledger', LedgerRoutes);
 
 const port = process.env.PORT || 8005;
 
