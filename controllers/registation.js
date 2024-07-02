@@ -50,8 +50,9 @@ router.get("/nexregistationcode", async (req, res) => {
       price,
       guardianname,
       guardiannumber,
+      status
     } = req.body;
-  
+
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
     const currentTime = currentDate.toLocaleTimeString([], {
@@ -59,7 +60,7 @@ router.get("/nexregistationcode", async (req, res) => {
       minute: "2-digit",
     }); // Format: HH:MM
     const sqlInsert =
-      "INSERT INTO registation ( rpcode ,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  )";
+      "INSERT INTO registation ( rpcode ,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
   
     db.query(
       sqlInsert,
@@ -78,6 +79,7 @@ router.get("/nexregistationcode", async (req, res) => {
         price,
         guardianname,
         guardiannumber,
+        status
       ],
       (error, result) => {
         if (error) {
@@ -123,9 +125,9 @@ router.get("/nexregistationcode", async (req, res) => {
   //Registation details update
   router.put("/updateregistation/:id", async(req, res)=>{
     const{id}= req.params;
-    const{rpcode,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber}= req.body
-    const sqlUpdate = "UPDATE registation SET rpcode = ?, date = ?, location = ?, name = ?, image = ?, mobilenumber = ?, sex = ?, age = ?, doctorname = ?, time = ?, type = ?, price = ?, guardianname = ?, guardiannumber = ?  WHERE id = ?";
-    await db.query(sqlUpdate, [rpcode, date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, id], (error, result ) =>{
+    const{rpcode,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status}= req.body
+    const sqlUpdate = "UPDATE registation SET rpcode = ?, date = ?, location = ?, name = ?, image = ?, mobilenumber = ?, sex = ?, age = ?, doctorname = ?, time = ?, type = ?, price = ?, guardianname = ?, guardiannumber = ?, status = ?  WHERE id = ?";
+    await db.query(sqlUpdate, [rpcode, date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status, id], (error, result ) =>{
       if (error) {
         console.log(error);
       }
