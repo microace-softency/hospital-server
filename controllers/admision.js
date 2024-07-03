@@ -38,11 +38,12 @@ const db = require("../db");
       time,
       guardiannumbaer,
       guardianname,
-      bed
+      bed,
+      packages
     } = req.body;
   
     const sqlInsert =
-      "INSERT INTO admissions (  name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO admissions (  name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed, packages) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
   
     db.query(
       sqlInsert,
@@ -59,7 +60,8 @@ const db = require("../db");
         time,
         guardiannumbaer,
         guardianname,
-        bed
+        bed,
+        packages
       ],
       (error, result) => {
         if (error) {
@@ -95,9 +97,9 @@ const db = require("../db");
   //Admssion details update
   router.put("/updateadmission/:id", async(req, res)=>{
     const{id}= req.params;
-    const{name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed }= req.body
-    const sqlUpdate = "UPDATE admissions SET name = ?, address = ?, mobilenumber = ?, pincode = ?, block = ?, age = ?, sex = ?, doctor = ?, date = ?, time = ?, guardiannumbaer = ?, guardianname = ?, bed = ? WHERE id = ?";
-    await db.query(sqlUpdate, [name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed , id], (error, result ) =>{
+    const{name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed, packages }= req.body
+    const sqlUpdate = "UPDATE admissions SET name = ?, address = ?, mobilenumber = ?, pincode = ?, block = ?, age = ?, sex = ?, doctor = ?, date = ?, time = ?, guardiannumbaer = ?, guardianname = ?, bed = ?, packages = ? WHERE id = ?";
+    await db.query(sqlUpdate, [name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed , packages, id], (error, result ) =>{
       if (error) {
         console.log(error);
       }
