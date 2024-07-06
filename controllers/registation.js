@@ -13,7 +13,7 @@ const getNextRegistationCode = async () => {
   return `RP${nextCode}`;
 };
 
-//next registation code create 
+//next registation code create
 router.get("/nexregistationcode", async (req, res) => {
   try {
     const nextRegistationCode = await getNextRegistationCode();
@@ -24,19 +24,47 @@ router.get("/nexregistationcode", async (req, res) => {
   }
 });
 
-  
-  //registation data fatch
-  router.get("/", async (req, res) => {
-    await db
-      .query("SELECT * FROM registation ")
-      .then((data) => res.send(data))
-      .catch((err) => console.log(err));
-  });
-  
-  //crete registation
-  router.post("/createregistation", async(req, res) => {
-    const RegistationCode = await getNextRegistationCode()
-    const {
+//registation data fatch
+router.get("/", async (req, res) => {
+  await db
+    .query("SELECT * FROM registation ")
+    .then((data) => res.send(data))
+    .catch((err) => console.log(err));
+});
+
+//crete registation
+router.post("/createregistation", async (req, res) => {
+  const RegistationCode = await getNextRegistationCode();
+  const {
+    date,
+    location,
+    name,
+    image,
+    mobilenumber,
+    sex,
+    age,
+    doctorname,
+    time,
+    type,
+    price,
+    guardianname,
+    guardiannumber,
+    status,
+  } = req.body;
+
+  const currentDate = new Date();
+  const formattedDate = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+  const currentTime = currentDate.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  }); // Format: HH:MM
+  const sqlInsert =
+    "INSERT INTO registation ( rpcode ,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+
+  db.query(
+    sqlInsert,
+    [
+      RegistationCode,
       date,
       location,
       name,
@@ -50,89 +78,98 @@ router.get("/nexregistationcode", async (req, res) => {
       price,
       guardianname,
       guardiannumber,
-      status
-    } = req.body;
-
-    const currentDate = new Date();
-    const formattedDate = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-    const currentTime = currentDate.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    }); // Format: HH:MM
-    const sqlInsert =
-      "INSERT INTO registation ( rpcode ,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-  
-    db.query(
-      sqlInsert,
-      [
-        RegistationCode,
-        date,
-        location,
-        name,
-        image,
-        mobilenumber,
-        sex,
-        age,
-        doctorname,
-        time,
-        type,
-        price,
-        guardianname,
-        guardiannumber,
-        status
-      ],
-      (error, result) => {
-        if (error) {
-          console.error("Error inserting data:", error);
-          res.status(500).send("Error inserting data into database");
-        } else {
-          console.log("Data inserted successfully");
-          res.status(200).send("Doctor Created");
-        }
-      }
-    );
-  });
-  
-  //remove registation
-  router.delete("/removeregistation/:id", (req, res) => {
-    const { id } = req.params;
-    const sqlRemove = "DELETE FROM registation WHERE id = ?";
-    db.query(sqlRemove, id, (error, result) => {
+      status,
+    ],
+    (error, result) => {
       if (error) {
-        console.log(error);
-      }
-    });
-  });
-  
-  //pataint details view
-  router.get("/:id", async (req, res) => {
-    const { id } = req.params;
-    const sqlGet = "SELECT * FROM registation WHERE id = ?";
-    try {
-      const result = await db.query(sqlGet, id);
-  
-      if (result.length === 0) {
-        res.status(404).json({ error: " not found" });
+        console.error("Error inserting data:", error);
+        res.status(500).send("Error inserting data into database");
       } else {
-        res.json(result[0]);
+        console.log("Data inserted successfully");
+        res.status(200).send("Doctor Created");
       }
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Internal Server Error" });
+    }
+  );
+});
+
+//remove registation
+router.delete("/removeregistation/:id", (req, res) => {
+  const { id } = req.params;
+  const sqlRemove = "DELETE FROM registation WHERE id = ?";
+  db.query(sqlRemove, id, (error, result) => {
+    if (error) {
+      console.log(error);
     }
   });
-  
-  //Registation details update
-  router.put("/updateregistation/:id", async(req, res)=>{
-    const{id}= req.params;
-    const{rpcode,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status}= req.body
-    const sqlUpdate = "UPDATE registation SET rpcode = ?, date = ?, location = ?, name = ?, image = ?, mobilenumber = ?, sex = ?, age = ?, doctorname = ?, time = ?, type = ?, price = ?, guardianname = ?, guardiannumber = ?, status = ?  WHERE id = ?";
-    await db.query(sqlUpdate, [rpcode, date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status, id], (error, result ) =>{
+});
+
+//pataint details view
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM registation WHERE id = ?";
+  try {
+    const result = await db.query(sqlGet, id);
+
+    if (result.length === 0) {
+      res.status(404).json({ error: " not found" });
+    } else {
+      res.json(result[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//Registation details update
+router.put("/updateregistation/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    rpcode,
+    date,
+    location,
+    name,
+    image,
+    mobilenumber,
+    sex,
+    age,
+    doctorname,
+    time,
+    type,
+    price,
+    guardianname,
+    guardiannumber,
+    status,
+  } = req.body;
+  const sqlUpdate =
+    "UPDATE registation SET rpcode = ?, date = ?, location = ?, name = ?, image = ?, mobilenumber = ?, sex = ?, age = ?, doctorname = ?, time = ?, type = ?, price = ?, guardianname = ?, guardiannumber = ?, status = ?  WHERE id = ?";
+  await db.query(
+    sqlUpdate,
+    [
+      rpcode,
+      date,
+      location,
+      name,
+      image,
+      mobilenumber,
+      sex,
+      age,
+      doctorname,
+      time,
+      type,
+      price,
+      guardianname,
+      guardiannumber,
+      status,
+      id,
+    ],
+    (error, result) => {
       if (error) {
         console.log(error);
       }
-      res.send(result)
-    })
-  });
+      res.send(result);
+    }
+  );
+});
 
 module.exports = router;
