@@ -34,18 +34,51 @@ router.get("/", async (req, res) => {
 router.post("/createdoctor", async (req, res) => {
   try {
     const DoctorCode = await getNextDoctorCode();
-    const { doctorname, designation, fees, percentage } = req.body;
+    const {
+      doctorname,
+      doctorRegistationNo,
+      designation,
+      onCallFees,
+      specialFees,
+      generalFees,
+      percentage,
+      doctorAvailabilityOn,
+      doctorSpecialist,
+      dateOfJoining,
+      doctorNumber,
+      remarks,
+    } = req.body;
 
     const sqlInsert = `INSERT INTO doctor (
-      dcode, doctorname,designation,fees, percentage
-      ) VALUES(?, ?, ?, ?, ?)`;
+      dcode,
+      doctorname,
+      doctorRegistationNo,
+      designation,
+      onCallFees,
+      specialFees,
+      generalFees,
+      percentage,
+      doctorAvailabilityOn,
+      doctorSpecialist,
+      dateOfJoining,
+      doctorNumber,
+      remarks
+      ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     await db.query(sqlInsert, [
       DoctorCode,
       doctorname,
+      doctorRegistationNo,
       designation,
-      fees,
+      onCallFees,
+      specialFees,
+      generalFees,
       percentage,
+      doctorAvailabilityOn,
+      doctorSpecialist,
+      dateOfJoining,
+      doctorNumber,
+      remarks,
     ]);
     res.status(200).send("Doctor Created");
   } catch (error) {
@@ -87,12 +120,41 @@ router.get("/:id", async (req, res) => {
 //Doctor details update
 router.put("/updatedoctor/:id", async (req, res) => {
   const { id } = req.params;
-  const { dcode, doctorname, designation, fees, percentage } = req.body;
+  const { 
+    dcode,
+    doctorname,
+    doctorRegistationNo,
+    designation,
+    onCallFees,
+    specialFees,
+    generalFees,
+    percentage,
+    doctorAvailabilityOn,
+    doctorSpecialist,
+    dateOfJoining,
+    doctorNumber,
+    remarks
+  } = req.body;
   const sqlUpdate =
-    "UPDATE doctor SET dcode = ?, doctorname = ?, designation = ?, fees = ?, percentage = ?  WHERE id = ?";
+    "UPDATE doctor SET dcode = ?, doctorname = ?, doctorRegistationNo = ?, designation = ?, onCallFees = ?, specialFees = ?, generalFees = ?, percentage = ?, doctorAvailabilityOn = ?, doctorSpecialist = ?, dateOfJoining = ?, doctorNumber = ?, remarks = ? WHERE id = ?";
   await db.query(
     sqlUpdate,
-    [dcode, doctorname, designation, fees, percentage, id],
+    [ 
+      dcode,
+      doctorname,
+      doctorRegistationNo,
+      designation,
+      onCallFees,
+      specialFees,
+      generalFees,
+      percentage,
+      doctorAvailabilityOn,
+      doctorSpecialist,
+      dateOfJoining,
+      doctorNumber,
+      remarks,
+      id
+    ],
     (error, result) => {
       if (error) {
         console.log(error);
