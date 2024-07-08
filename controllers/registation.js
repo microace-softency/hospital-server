@@ -3,6 +3,39 @@ router = express.Router();
 
 const db = require("../db");
 
+
+// Helper function to format date to YYYY-MM-DD
+// const formatDate = (date) => {
+//   const d = new Date(date);
+//   let month = '' + (d.getMonth() + 1);
+//   let day = '' + d.getDate();
+//   const year = d.getFullYear();
+
+//   if (month.length < 2) month = '0' + month;
+//   if (day.length < 2) day = '0' + day;
+
+//   return [year, month, day].join('-');
+// };
+
+// // Endpoint to get registrations for a specific date
+// router.get('/registrationreport/:date', async (req, res) => {
+//   try {
+//     const selectedDate = formatDate(req.params.date);
+
+//     const sqlQuery = `
+//       SELECT * FROM registation 
+//       WHERE date(createdAt) = ?
+//     `;
+
+//     const [registrations] = await db.query(sqlQuery, [selectedDate]);
+
+//     res.status(200).json(registrations);
+//   } catch (error) {
+//     console.error('Error fetching registrations:', error);
+//     res.status(500).json({ message: error.message });
+//   }
+// });
+
 //helperfunction crearte registion code
 const getNextRegistationCode = async () => {
   const [result] = await db.query(
