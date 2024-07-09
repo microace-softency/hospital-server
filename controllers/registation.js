@@ -2,39 +2,23 @@ const express = require("express");
 router = express.Router();
 
 const db = require("../db");
-
-
-// Helper function to format date to YYYY-MM-DD
-// const formatDate = (date) => {
-//   const d = new Date(date);
-//   let month = '' + (d.getMonth() + 1);
-//   let day = '' + d.getDate();
-//   const year = d.getFullYear();
-
-//   if (month.length < 2) month = '0' + month;
-//   if (day.length < 2) day = '0' + day;
-
-//   return [year, month, day].join('-');
-// };
+const mysqlPool = require("../db");
 
 // // Endpoint to get registrations for a specific date
-// router.get('/registrationreport/:date', async (req, res) => {
-//   try {
-//     const selectedDate = formatDate(req.params.date);
+router.get('/registrationreport/:selectedDate', async (req, res) => {
+  const { selectedDate } = req.params;
 
-//     const sqlQuery = `
-//       SELECT * FROM registation 
-//       WHERE date(createdAt) = ?
-//     `;
+  try {
+    const connection = await mysqlPool.getConnection();
+    const [rows] = await connection.query('SELECT * FROM registation WHERE DATE(createdAt) = ?', [selectedDate]);
+    connection.release();
 
-//     const [registrations] = await db.query(sqlQuery, [selectedDate]);
-
-//     res.status(200).json(registrations);
-//   } catch (error) {
-//     console.error('Error fetching registrations:', error);
-//     res.status(500).json({ message: error.message });
-//   }
-// });
+    res.json(rows); // Send the fetched rows (registrations) as JSON response
+  } catch (error) {
+    console.error('Error fetching registrations:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
 //helperfunction crearte registion code
 const getNextRegistationCode = async () => {
@@ -92,7 +76,7 @@ router.post("/createregistation", async (req, res) => {
     minute: "2-digit",
   }); // Format: HH:MM
   const sqlInsert =
-    "INSERT INTO registation ( rpcode ,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status ) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+    "INSERT INTO registation ( rpcode ,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status, createdAt) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW() )";
 
   db.query(
     sqlInsert,
