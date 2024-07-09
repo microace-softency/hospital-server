@@ -189,4 +189,40 @@ router.put("/updateregistation/:id", async (req, res) => {
   );
 });
 
+// Search for patients by key (name or mobilenumber)
+// router.get("/search", async (req, res) => {
+//   const { name, mobilenumber } = req.query;
+//   console.log(req.body);
+//   try {
+//     const connection = await mysqlPool.getConnection();
+//     let query = "SELECT * FROM registation WHERE";
+//     const params = [];
+
+//     if (name) {
+//       query += " name LIKE ?";
+//       params.push(`%${name}%`);
+//     }
+
+//     if (mobilenumber) {
+//       if (params.length > 0) query += " AND";
+//       query += " mobilenumber LIKE ?";
+//       params.push(`%${mobilenumber}%`);
+//     }
+
+//     if (params.length === 0) {
+//       res.status(400).json({ error: "Please provide a search key" });
+//       return;
+//     }
+
+//     const [rows] = await connection.query(query, params);
+//     connection.release();
+
+//     res.json(rows); // Send the fetched rows as JSON response
+//   } catch (error) {
+//     console.error("Error fetching patients:", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
+
+
 module.exports = router;
