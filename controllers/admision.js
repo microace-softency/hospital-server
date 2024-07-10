@@ -11,6 +11,19 @@ const db = require("../db");
       .then((data) => res.send(data))
       .catch((err) => console.log(err));
   });
+
+  //today fatch admision data 
+  router.get('/today', async (req, res) => {
+    try {
+      const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+      const query = 'SELECT COUNT(*) AS count FROM admissions WHERE DATE(date) = ?';
+      const [results] = await db.query(query, [today]);
+      res.json(results[0]);
+    } catch (error) {
+      console.error('Error fetching today\'s admissions:', error);
+      res.status(500).json({ message: 'Error fetching today\'s admissions' });
+    }
+  });
   
   //remove admision user
   router.delete("/removeadmission/:id", (req, res) => {

@@ -49,6 +49,19 @@ router.get("/", async (req, res) => {
     .catch((err) => console.log(err));
 });
 
+//today registation data fatch
+router.get('/today', async (req, res) => {
+  try {
+    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+    const query = 'SELECT COUNT(*) AS count FROM registation WHERE DATE(date) = ?';
+    const [results] = await db.query(query, [today]);
+    res.json(results[0]);
+  } catch (error) {
+    console.error('Error fetching today\'s registation:', error);
+    res.status(500).json({ message: 'Error fetching today\'s registation' });
+  }
+});
+
 //crete registation
 router.post("/createregistation", async (req, res) => {
   const RegistationCode = await getNextRegistationCode();

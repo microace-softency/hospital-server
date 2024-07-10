@@ -34,6 +34,7 @@ salesRoutes = require("./controllers/sales");
 authRoutes = require('./controllers/login');
 LedgerRoutes = require('./controllers/generalLedger');
 VoucherRoutes = require('./controllers/voucher');
+dashboardRoutes = require('./controllers/dashboard');
 
 
 app.get("/", (req, res) => {
@@ -135,6 +136,9 @@ app.use('/api/ledger', LedgerRoutes);
 
 //Voucher
 app.use('/api/voucher', VoucherRoutes);
+
+//dashboard
+app.use('/api/dashboard', dashboardRoutes); 
 
 const port = process.env.PORT || 8005;
 
