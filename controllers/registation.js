@@ -5,12 +5,15 @@ const db = require("../db");
 const mysqlPool = require("../db");
 
 // // Endpoint to get registrations for a specific date
-router.get('/registrationreport/:selectedDate', async (req, res) => {
-  const { selectedDate } = req.params;
+router.get('/registrationreport', async (req, res) => {
+  const { startDate, endDate } = req.query;
 
   try {
     const connection = await mysqlPool.getConnection();
-    const [rows] = await connection.query('SELECT * FROM registation WHERE DATE(createdAt) = ?', [selectedDate]);
+    const [rows] = await connection.query(
+      'SELECT * FROM registation WHERE DATE(createdAt) BETWEEN ? AND ?',
+      [startDate, endDate]
+    );
     connection.release();
 
     res.json(rows); // Send the fetched rows (registrations) as JSON response
