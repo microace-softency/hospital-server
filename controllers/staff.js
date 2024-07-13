@@ -48,21 +48,25 @@ router.get("/nextstaffcode", async (req, res) => {
         name,
         degicnation,
         department,
+        DOB,
+        joining_date,
         pf,
         esi,
         aadharcard,
         pancard,
         additionalfield
       } = req.body;
+      console.log(req.body);
   
       const sqlInsertStaff =
         `INSERT INTO staff (
-           scode, name, degicnation, department, pf, esi, aadharcard, pancard
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+          scode, name, degicnation, department, DOB, joining_date, pf, esi, aadharcard, pancard
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   
       const [staffResult] = await db.query(
         sqlInsertStaff,
-        [scode, name, degicnation, department, pf, esi, aadharcard, pancard]
+        [scode, name, degicnation, department, DOB, joining_date, pf, esi, aadharcard, pancard
+        ]
       );
   
       const staffId = staffResult.insertId;
@@ -112,12 +116,12 @@ router.get("/nextstaffcode", async (req, res) => {
   router.put("/updatestaff/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      const { scode, name, degicnation, department, pf, esi, aadharcard, pancard, additionalfield } = req.body;
+      const { scode, name, degicnation, department, DOB, joining_date, pf, esi, aadharcard, pancard, additionalfield } = req.body;
   
       const sqlUpdate = 
-        "UPDATE staff SET scode = ?, name = ?, degicnation = ?, department = ?, pf = ?, esi = ?, aadharcard = ?, pancard = ? WHERE id = ?";
+        "UPDATE staff SET scode = ?, name = ?, degicnation = ?, department = ?, DOB = ?, joining_date = ?, pf = ?, esi = ?, aadharcard = ?, pancard = ? WHERE id = ?";
   
-      await db.query(sqlUpdate, [scode, name, degicnation, department, pf, esi, aadharcard, pancard, id]);
+      await db.query(sqlUpdate, [scode, name, degicnation, department, DOB, joining_date, pf, esi, aadharcard, pancard, id]);
   
       await db.query("DELETE FROM staff_additional_fields WHERE staff_id = ?", [id]);
   
