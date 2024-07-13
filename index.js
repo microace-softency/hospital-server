@@ -35,6 +35,7 @@ authRoutes = require('./controllers/login');
 LedgerRoutes = require('./controllers/generalLedger');
 VoucherRoutes = require('./controllers/voucher');
 dashboardRoutes = require('./controllers/dashboard');
+counsellingRoutes = require('./controllers/counselling');
 
 
 app.get("/", (req, res) => {
@@ -118,6 +119,9 @@ app.use("/api/outdoreregistation", outdoreRegistationRoutes);
 
 //purches
 app.use("/api/purchase", purchaseRoutes);
+
+//counselling
+app.use("/api/counselling", counsellingRoutes);
 
 //purches Issue
 app.use("/api/purchaseissue", purchaseIssueRoutes);
