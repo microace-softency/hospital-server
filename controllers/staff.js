@@ -86,9 +86,6 @@ router.get("/nextstaffcode", async (req, res) => {
       res.status(500).send("Error inserting data into database");
     }
   });
-
- 
-
   
   //staff details view
   router.get("/:id", async (req, res) => {

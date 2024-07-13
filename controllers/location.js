@@ -34,13 +34,13 @@ router.get("/", async (req, res) => {
 router.post("/createlocation", async (req, res) => {
   try {
     const LocationCode = await getNextLocationCode();
-    const { address, district, pincode, postoffice } = req.body;
+    const { lname, address, district, pincode, postoffice } = req.body;
 
     const sqlInsert = `INSERT INTO location 
-      (lcode, address, district, pincode, postoffice) 
-      VALUES(?, ?, ?, ?, ?)`;
+      (lcode, lname, address, district, pincode, postoffice) 
+      VALUES(?, ?, ?, ?, ?, ?)`;
 
-    await db.query(sqlInsert, [LocationCode, address, district, pincode, postoffice]);
+    await db.query(sqlInsert, [LocationCode, lname, address, district, pincode, postoffice]);
     res.status(200).send("Location Created");
   } catch (error) {
     console.error("Error inserting data:", error);
@@ -81,12 +81,12 @@ router.get("/:id", async (req, res) => {
 //location details update
 router.put("/updatelocation/:id", async (req, res) => {
   const { id } = req.params;
-  const { address, district, pincode, postoffice } = req.body;
+  const {lname, address, district, pincode, postoffice } = req.body;
   const sqlUpdate =
-    "UPDATE location SET address = ?, district = ?, pincode = ?, postoffice = ?  WHERE id = ?";
+    "UPDATE location SET lname = ?, address = ?, district = ?, pincode = ?, postoffice = ?  WHERE id = ?";
   await db.query(
     sqlUpdate,
-    [address, district, pincode, postoffice, id],
+    [lname, address, district, pincode, postoffice, id],
     (error, result) => {
       if (error) {
         console.log(error);
