@@ -40,6 +40,7 @@ router.post("/creategeneralledger", async (req, res) => {
       PLBSGroup,
       PLBSSGroup,
       cashBankBook,
+      cashBankCode,
       initial,
       opening,
     } = req.body;
@@ -51,9 +52,10 @@ router.post("/creategeneralledger", async (req, res) => {
       PLBSGroup,
       PLBSSGroup,
       cashBankBook,
+      cashBankCode,
       initial,
       opening
-      ) VALUES(?, ?, ?, ?, ?, ?, ?, ?)`;
+      ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     await db.query(sqlInsert, [
       GLCode,
@@ -62,6 +64,7 @@ router.post("/creategeneralledger", async (req, res) => {
       PLBSGroup,
       PLBSSGroup,
       cashBankBook,
+      cashBankCode,
       initial,
       opening
     ]);
@@ -112,11 +115,12 @@ router.put("/updateledger/:id", async (req, res) => {
     PLBSGroup,
     PLBSSGroup,
     cashBankBook,
+    cashBankCode,
     initial,
     opening
   } = req.body;
   const sqlUpdate =
-    "UPDATE GeneralLedger SET GLCode = ?, description = ?, PLBSAccount = ?, PLBSGroup = ?, PLBSSGroup = ?,  cashBankBook = ?, initial = ?, opening = ? WHERE id = ?";
+    "UPDATE GeneralLedger SET GLCode = ?, description = ?, PLBSAccount = ?, PLBSGroup = ?, PLBSSGroup = ?,  cashBankBook = ?, cashBankCode = ?, initial = ?, opening = ? WHERE id = ?";
   await db.query(
     sqlUpdate,
     [
@@ -126,6 +130,7 @@ router.put("/updateledger/:id", async (req, res) => {
       PLBSGroup,
       PLBSSGroup,
       cashBankBook,
+      cashBankCode,
       initial,
       opening,
       id
