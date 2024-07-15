@@ -35,7 +35,6 @@ router.get("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const { selectedPackage, packageAmount, discount, netAmount } = req.body;
-  console.log(req.body);
   const sqlUpdate = "UPDATE prescriptions SET selectedPackage = ?, packageAmount = ?, discount = ?, netAmount = ? WHERE id = ?";
 
   try {
