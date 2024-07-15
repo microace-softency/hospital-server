@@ -31,5 +31,25 @@ router.get("/", async (req, res) => {
     }
   }); 
   
+// Update counselling details
+router.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { selectedPackage, packageAmount, discount, netAmount } = req.body;
+  console.log(req.body);
+  const sqlUpdate = "UPDATE prescriptions SET selectedPackage = ?, packageAmount = ?, discount = ?, netAmount = ? WHERE id = ?";
+
+  try {
+    const result = await db.query(sqlUpdate, [selectedPackage, packageAmount, discount, netAmount, id]);
+
+    if (result.affectedRows === 0) {
+      res.status(404).json({ error: "Counselling not found" });
+    } else {
+      res.json({ message: "Counselling updated successfully" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server Error" });
+  }
+});
 
 module.exports = router;
