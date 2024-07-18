@@ -45,12 +45,12 @@ router.get("/", async (req, res) => {
   router.post("/createbed", async(req, res) => {
     try{
       const BedCode = await getNextBedCode()
-    const { bedname, type } = req.body;
+    const { bedname, type, status } = req.body;
   
-    const sqlInsert = "INSERT INTO bed (bedcode, bedname, type) VALUES(?, ?, ?)";
+    const sqlInsert = "INSERT INTO bed (bedcode, bedname, type, status) VALUES(?, ?, ?, ?)";
   
-    db.query(sqlInsert, [BedCode, bedname, type]);
-    res.status(200).send("Location Created");
+    db.query(sqlInsert, [BedCode, bedname, type, status]);
+    res.status(200).send("Bed Created");
   } catch (error) {
     console.error("Error inserting data:", error);
     res.status(500).send("Error inserting data into database");
@@ -79,14 +79,30 @@ router.get("/", async (req, res) => {
   //Bed details update
   router.put("/updatebed/:id", async(req, res)=>{
     const{id}= req.params;
-    const{bedcode,bedname, type }= req.body
-    const sqlUpdate = "UPDATE bed SET bedcode = ?, bedname = ?, type = ?  WHERE id = ?";
-    await db.query(sqlUpdate, [bedcode, bedname, type,  id], (error, result ) =>{
+    const{bedcode,bedname, type, status }= req.body
+    const sqlUpdate = "UPDATE bed SET bedcode = ?, bedname = ?, type = ?, status = ?  WHERE id = ?";
+    await db.query(sqlUpdate, [bedcode, bedname, type, status, id], (error, result ) =>{
       if (error) {
         console.log(error);
       }
       res.send(result)
     })
   });
+
+// Update bed status
+router.put("/:id/status", async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  console.log('check', id, status);
+  const sqlUpdateStatus = "UPDATE bed SET status = ? WHERE id = ?";
+  try {
+    const [result] = await db.query(sqlUpdateStatus, [status, id]);
+    res.json({ message: "Bed status updated successfully" });
+  } catch (error) {
+    console.error("Error updating bed status:", error);
+    res.status(500).json({ error: "Error updating bed status" });
+  }
+});
+
 
 module.exports = router;

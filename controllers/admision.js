@@ -54,7 +54,6 @@ const db = require("../db");
       bed,
       packages
     } = req.body;
-  
     const sqlInsert =
       "INSERT INTO admissions (  name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed, packages) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
   
