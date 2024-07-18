@@ -52,10 +52,11 @@ const db = require("../db");
       guardiannumbaer,
       guardianname,
       bed,
-      packages
+      packages,
+      status
     } = req.body;
     const sqlInsert =
-      "INSERT INTO admissions (  name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed, packages) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO admissions (  name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed, packages, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
   
     db.query(
       sqlInsert,
@@ -73,7 +74,8 @@ const db = require("../db");
         guardiannumbaer,
         guardianname,
         bed,
-        packages
+        packages,
+        status
       ],
       (error, result) => {
         if (error) {
@@ -109,9 +111,9 @@ const db = require("../db");
   //Admssion details update
   router.put("/updateadmission/:id", async(req, res)=>{
     const{id}= req.params;
-    const{name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed, packages }= req.body
-    const sqlUpdate = "UPDATE admissions SET name = ?, address = ?, mobilenumber = ?, pincode = ?, block = ?, age = ?, sex = ?, doctor = ?, date = ?, time = ?, guardiannumbaer = ?, guardianname = ?, bed = ?, packages = ? WHERE id = ?";
-    await db.query(sqlUpdate, [name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed , packages, id], (error, result ) =>{
+    const{name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed, packages, status }= req.body
+    const sqlUpdate = "UPDATE admissions SET name = ?, address = ?, mobilenumber = ?, pincode = ?, block = ?, age = ?, sex = ?, doctor = ?, date = ?, time = ?, guardiannumbaer = ?, guardianname = ?, bed = ?, packages = ?, status = ? WHERE id = ?";
+    await db.query(sqlUpdate, [name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed , packages, status, id], (error, result ) =>{
       if (error) {
         console.log(error);
       }
@@ -119,5 +121,21 @@ const db = require("../db");
     })
   });
 
+
+  router.put("/status/:id", async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    const query = "UPDATE admissions SET status = ? WHERE id = ?";
+    
+    try {
+      const result = await db.query(query, [status, id]);
+      res.send(result);
+    } catch (err) {
+      console.error('Failed to update status', err);
+      res.status(500).send("Failed to update status");
+    }
+  });
+  
+  
 
 module.exports = router;
