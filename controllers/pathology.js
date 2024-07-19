@@ -222,4 +222,71 @@ router.put("/updatepathology/:id", async (req, res) => {
   }
 });
 
+//pathology details view
+router.get("/inhouse/:id", async (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM inHouse_pathology_records WHERE id = ?";
+
+  try {
+    const result = await db.query(sqlGet, id);
+    if (result.length === 0) {
+      res.status(404).json({ error: "Data not found" });
+    } else {
+      res.json(result[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+// Pathology details update
+router.put("/updateinhousepathology/:id", async (req, res) => {
+  const { id } = req.params;
+  const {
+    patientname,
+    tests,
+    referDrName,
+    totalAmount,
+    advancePayment,
+    duePayment,
+    date,
+    patientnumber,
+    patientaddress,
+    agent,
+  } = req.body;
+
+  const sqlUpdate =
+    "UPDATE inHouse_pathology_records SET patientname = ?, tests = ?, referDrName = ?, totalAmount = ?, advancePayment = ?, duePayment = ?, date = ?, patientnumber = ?, patientaddress = ?, agent = ? WHERE id = ?";
+  
+  try {
+    const result = await db.query(
+      sqlUpdate,
+      [
+        patientname,
+        JSON.stringify(tests),
+        referDrName,
+        totalAmount,
+        advancePayment,
+        duePayment,
+        date,
+        patientnumber,
+        patientaddress,
+        agent,
+        id,
+      ]
+    );
+
+    if (result.affectedRows === 0) {
+      res.status(404).json({ error: "Data not found" });
+    } else {
+      res.json({ message: "inHouse_pathology_records record updated successfully" });
+    }
+  } catch (error) {
+    console.error("Error updating pathology record:", error);
+    res.status(500).json({ error: "Failed to update pathology record" });
+  }
+});
+
 module.exports = router;
