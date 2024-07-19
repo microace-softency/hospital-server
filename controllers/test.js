@@ -37,13 +37,13 @@ router.delete("/removetest/:id", (req, res) => {
 router.post("/createtest", async (req, res) => {
   try {
     const TestCode = await getNextTestCode();
-    const { testname, amount, day } = req.body;
+    const { testname, amount, day, inHouse  } = req.body;
 
     const sqlInsert = `INSERT INTO test ( 
-        tcode, testname, amount, day
-        ) VALUES (?, ?, ?, ?)`;
+        tcode, testname, amount, day, inHouse 
+        ) VALUES (?, ?, ?, ?, ?)`;
 
-    await db.query(sqlInsert, [TestCode, testname, amount, day]);
+    await db.query(sqlInsert, [TestCode, testname, amount, day, inHouse ]);
     res.status(200).send("Test Created");
   } catch (error) {
     console.error("Error inserting data:", error);
@@ -152,10 +152,10 @@ router.get("/:id", async (req, res) => {
 //Test details update
 router.put("/updatetest/:id", async (req, res) => {
   const { id } = req.params;
-  const { testname, amount, day } = req.body;
+  const { testname, amount, day, inHouse } = req.body;
   const sqlUpdate =
-    "UPDATE test SET testname = ?, amount = ?, day = ?  WHERE id = ?";
-  await db.query(sqlUpdate, [testname, amount, day, id], (error, result) => {
+    "UPDATE test SET testname = ?, amount = ?, day = ?, inHouse = ?  WHERE id = ?";
+  await db.query(sqlUpdate, [testname, amount, day, inHouse, id], (error, result) => {
     if (error) {
       console.log(error);
     }

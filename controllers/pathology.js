@@ -11,6 +11,14 @@ router.get("/", async (req, res) => {
     .catch((err) => console.log(err));
 });
 
+//fatch IN_HOUSE pathology  user
+router.get("/getinhousepathology", async (req, res) => {
+  await db
+    .query("SELECT * FROM inHouse_pathology_records ")
+    .then((data) => res.send(data))
+    .catch((err) => console.log(err));
+});
+
 //remove pathology user
 router.delete("/removepathology/:id", (req, res) => {
   const { id } = req.params;
@@ -90,6 +98,45 @@ router.post("/createpathology", async (req, res) => {
       patientname,
       JSON.stringify(tests),
       JSON.stringify(group_tests),
+      referDrName,
+      totalAmount,
+      advancePayment,
+      duePayment,
+      date,
+      patientnumber,
+      patientaddress,
+      agent,
+    ]);
+    res.status(200).send("Pathology Created");
+  } catch (error) {
+    console.error("Error inserting data:", error);
+    res.status(500).send("Error inserting data into database");
+  }
+});
+
+
+// Create IN_HOUSE pathology record
+router.post("/inhousecreatepathology", async (req, res) => {
+  try {
+  const {
+    patientname,
+    tests,
+    referDrName,
+    totalAmount,
+    advancePayment,
+    duePayment,
+    date,
+    patientnumber,
+    patientaddress,
+    agent,
+  } = req.body;
+
+  const query =
+    "INSERT INTO inHouse_pathology_records (patientname, tests, referDrName, totalAmount, advancePayment, duePayment, date, patientnumber, patientaddress, agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+ await db.query( query,
+    [
+      patientname,
+      JSON.stringify(tests),
       referDrName,
       totalAmount,
       advancePayment,

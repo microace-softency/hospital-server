@@ -124,7 +124,7 @@ router.get("/", async (req, res) => {
 // Get bed ID by name
 router.get("/bedId/:bedName", async (req, res) => {
   const { bedName } = req.params;
-  const sqlGetBedId = "SELECT id FROM bed WHERE bedname = ?"; // Use the correct column name
+  const sqlGetBedId = "SELECT id FROM bed WHERE bedname = ?"; 
   try {
     const [result] = await db.query(sqlGetBedId, [bedName]);
     if (result.length > 0) {
