@@ -90,10 +90,58 @@ router.get("/", async (req, res) => {
   });
 
 // Update bed status
+// router.put("/:id/status", async (req, res) => {
+//   const { id } = req.params;
+//   const { status } = req.body;
+//   console.log('check', id, status);
+//   const sqlUpdateStatus = "UPDATE bed SET status = ? WHERE id = ?";
+//   try {
+//     const [result] = await db.query(sqlUpdateStatus, [status, id]);
+//     res.json({ message: "Bed status updated successfully" });
+//   } catch (error) {
+//     console.error("Error updating bed status:", error);
+//     res.status(500).json({ error: "Error updating bed status" });
+//   }
+// });
+
+// // Get bed ID by name
+// router.get("/bedId/:bedName", async (req, res) => {
+//   const { bedName } = req.params;
+//   const sqlGetBedId = "SELECT id FROM bed WHERE name = ?";
+//   try {
+//     const [result] = await db.query(sqlGetBedId, [bedName]);
+//     if (result.length > 0) {
+//       res.json({ bedId: result[0].id });
+//     } else {
+//       res.status(404).json({ error: "Bed not found" });
+//     }
+//   } catch (error) {
+//     console.error("Error fetching bed ID:", error);
+//     res.status(500).json({ error: "Error fetching bed ID" });
+//   }
+// });
+
+// Get bed ID by name
+router.get("/bedId/:bedName", async (req, res) => {
+  const { bedName } = req.params;
+  const sqlGetBedId = "SELECT id FROM bed WHERE bedname = ?"; // Use the correct column name
+  try {
+    const [result] = await db.query(sqlGetBedId, [bedName]);
+    if (result.length > 0) {
+      res.json({ bedId: result[0].id });
+    } else {
+      res.status(404).json({ error: "Bed not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching bed ID:", error);
+    res.status(500).json({ error: "Error fetching bed ID" });
+  }
+});
+
+// Update bed status
 router.put("/:id/status", async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
-  console.log('check', id, status);
   const sqlUpdateStatus = "UPDATE bed SET status = ? WHERE id = ?";
   try {
     const [result] = await db.query(sqlUpdateStatus, [status, id]);
