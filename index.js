@@ -16,6 +16,7 @@ doctorRoutes = require("./controllers/doctor");
 agentRoutes = require("./controllers/agent");
 testRoutes = require("./controllers/test");
 registationRoutes = require("./controllers/registation");
+preCheckUpRoutes = require("./controllers/preCheckup");
 prescriptionRoutes = require("./controllers/prescription");
 locationRoutes = require("./controllers/location");
 packageRoutes = require("./controllers/packeg");
@@ -83,6 +84,9 @@ app.use("/api/test", testRoutes);
 
 //registation
 app.use("/api/registation", registationRoutes);
+
+//Pre-Checkup
+app.use("/api/pre-checkup", preCheckUpRoutes);
 
 //prescription
 app.use("/api/prescription", prescriptionRoutes);
