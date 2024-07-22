@@ -47,6 +47,7 @@ router.get("/", async (req, res) => {
       doctorname,
       sex,
       age,
+      createdBy
     } = req.body;
     // const imageBuffer = Buffer.from(image, 'base64');
   
@@ -57,7 +58,7 @@ router.get("/", async (req, res) => {
       minute: "2-digit",
     }); // Format: HH:MM
     const sqlInsert =
-      "INSERT INTO outdore_registation (  orpCode, date, time, patiantname, address, image, mobilenumber, guardianname, guardiannumber, doctorname, sex, age ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?  )";
+      "INSERT INTO outdore_registation (  orpCode, date, time, patiantname, address, image, mobilenumber, guardianname, guardiannumber, doctorname, sex, age, createdBy ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
   
     db.query(
       sqlInsert,
@@ -74,6 +75,7 @@ router.get("/", async (req, res) => {
         doctorname,
         sex,
         age,
+        createdBy
       ],
       (error, result) => {
         if (error) {
