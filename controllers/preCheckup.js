@@ -10,62 +10,7 @@ router.get("/", async (req, res) => {
       .catch((err) => console.log(err));
   });
 
-//create pre-checkup
-// router.post('/saveprecheckup', (req, res) => {
-//     const {
-//       rpcode,
-//       date,
-//       location,
-//       name,
-//       image,
-//       mobilenumber,
-//       sex,
-//       age,
-//       guardiannumber,
-//       guardianname,
-//       doctorname,
-//       doctordesignation,
-//       time,
-//       type,
-//       price,
-//       status,
-//       doctorCheckupStatus,
-//       notes
-//     } = req.body;
-  
-//     const query = `
-//       INSERT INTO pre_checkup (
-//         rpcode, date, location, name, image, mobilenumber, sex, age, guardiannumber, guardianname, doctorname, doctordesignation, time, type, price, status, doctorCheckupStatus, notes
-//       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-//     `;
-  
-//     db.query(query, [
-//       rpcode,
-//       date,
-//       location,
-//       name,
-//       image,
-//       mobilenumber,
-//       sex,
-//       age,
-//       guardiannumber,
-//       guardianname,
-//       doctorname,
-//       doctordesignation,
-//       time,
-//       type,
-//       price,
-//       status,
-//       doctorCheckupStatus,
-//       notes
-//     ], (error, results) => {
-//       if (error) {
-//         return res.status(500).send(error);
-//       }
-//       res.send('Pre-Checkup Saved Successfully');
-//     });
-//   });
-
+//create Pre Check Up
   router.post('/saveprecheckup', async (req, res) => {
     const {
       rpcode,
@@ -108,5 +53,22 @@ router.get("/", async (req, res) => {
     }
   });
   
+  //Pre-Checup details view
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM pre_checkup WHERE id = ?";
+  try {
+    const result = await db.query(sqlGet, id);
+
+    if (result.length === 0) {
+      res.status(404).json({ error: " not found" });
+    } else {
+      res.json(result[0]);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 module.exports = router;
