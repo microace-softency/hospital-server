@@ -60,13 +60,14 @@ router.post("/createproduct", async (req, res) => {
       opening,
       expdate,
       batchnumber,
-      hasBatchNumber, // Add this line
+      lancecode,
+      hasBatchNumber,
     } = req.body;
 
     const sqlInsert = `
       INSERT INTO productmaster (
-        productcode, Description, purchesunit, Stock, sale, hsnsaccode, productgroup, productsubgroup, taxcategory, salerate, buyrate, opening, expdate, batchnumber, hasBatchNumber
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        productcode, Description, purchesunit, Stock, sale, hsnsaccode, productgroup, productsubgroup, taxcategory, salerate, buyrate, opening, expdate, batchnumber,lancecode, hasBatchNumber
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     await db.query(sqlInsert, [
       productCode,
@@ -83,7 +84,8 @@ router.post("/createproduct", async (req, res) => {
       opening,
       expdate,
       batchnumber,
-      hasBatchNumber, // Add this line
+      lancecode,
+      hasBatchNumber, 
     ]);
 
     res.status(200).send("Product created successfully with Product Code: " + productCode);
@@ -131,12 +133,13 @@ router.put("/updateproduct/:id", async (req, res) => {
     opening,
     expdate,
     batchnumber,
-    hasBatchNumber, // Add this line
+    lancecode,
+    hasBatchNumber, 
   } = req.body;
 
   const sqlUpdate = `
     UPDATE productmaster 
-    SET productcode = ?, Description = ?, purchesunit = ?, Stock = ?, sale = ?, hsnsaccode = ?, productgroup = ?, productsubgroup = ?, taxcategory = ?, salerate = ?, buyrate = ?, opening = ?, expdate = ?, batchnumber = ?, hasBatchNumber = ? 
+    SET productcode = ?, Description = ?, purchesunit = ?, Stock = ?, sale = ?, hsnsaccode = ?, productgroup = ?, productsubgroup = ?, taxcategory = ?, salerate = ?, buyrate = ?, opening = ?, expdate = ?, batchnumber = ?, lancecode = ?, hasBatchNumber = ? 
     WHERE id = ?`;
 
   try {
@@ -155,7 +158,8 @@ router.put("/updateproduct/:id", async (req, res) => {
       opening,
       expdate,
       batchnumber,
-      hasBatchNumber, // Add this line
+      lancecode,
+      hasBatchNumber,
       id,
     ]);
     res.send("Product updated successfully");
