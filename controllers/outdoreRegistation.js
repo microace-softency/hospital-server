@@ -5,15 +5,21 @@ const db = require("../db");
 
 //helperfunction crearte registion code
 const getNextRegistationCode = async () => {
-  const [result] = await db.query(
-    "SELECT MAX(CAST(SUBSTRING(orpCode, 3) AS UNSIGNED)) AS maxCode FROM outdore_registation"
-  );
-  const maxCode = result[0].maxCode || 0;
-  const nextCode = (maxCode + 1).toString().padStart(3, "0");
-  return `ORP${nextCode}`;
-};
+  try {
+    const [result] = await db.query(
+      "SELECT MAX(CAST(SUBSTRING(orpCode, 3) AS UNSIGNED)) AS maxCode FROM outdore_registation"
+    );
+    // Ensure result is properly checked
+    const maxCode = result && result[0] && result[0].maxCode ? result[0].maxCode : 0;
+    const nextCode = (parseInt(maxCode) + 1).toString().padStart(3, "0");
+    return `OP${nextCode}`;
+  } catch (error) {
+    console.error("Error generating next registration code:", error);
+    throw error; // Ensure error is thrown to be caught by the calling function
+  }
+};  
 
-//next registation code create 
+//next registation code create
 router.get("/nexregistationcode", async (req, res) => {
   try {
     const nextRegistationCode = await getNextRegistationCode();
@@ -23,6 +29,7 @@ router.get("/nexregistationcode", async (req, res) => {
     res.status(500).json({ error: "Error generating next Registation code" });
   }
 });
+
 
 //fatch data
 router.get("/", async (req, res) => {
