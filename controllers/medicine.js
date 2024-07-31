@@ -95,7 +95,6 @@ router.post("/createproduct", async (req, res) => {
   }
 });
 
-
 // Product details view
 router.get("/:id", async (req, res) => {
   const { id } = req.params;

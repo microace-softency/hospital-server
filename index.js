@@ -37,6 +37,7 @@ LedgerRoutes = require('./controllers/generalLedger');
 VoucherRoutes = require('./controllers/voucher');
 dashboardRoutes = require('./controllers/dashboard');
 counsellingRoutes = require('./controllers/counselling');
+outDoorPreCheckUpRoutes = require('./controllers/preCheckupOutdoor');
 
 
 app.get("/", (req, res) => {
@@ -120,6 +121,9 @@ app.use("/api/outdoreuser", outdoreUserRoutes);
 
 //outdoreregistaion
 app.use("/api/outdoreregistation", outdoreRegistationRoutes);
+
+//outdoor Pre-Checkup
+app.use("/api/outdoor-pre-checkup", outDoorPreCheckUpRoutes);
 
 //purches
 app.use("/api/purchase", purchaseRoutes);
