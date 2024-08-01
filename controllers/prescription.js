@@ -11,6 +11,14 @@ router.get("/", async (req, res) => {
     .catch((err) => console.log(err));
 });
 
+//fatch Outdoor prescription data
+router.get("/outdoorPres", async (req, res) => {
+  await db
+    .query("SELECT * FROM outdoor_prescriptions")
+    .then((data) => res.send(data))
+    .catch((err) => console.log(err));
+});
+
 
 // Create prescription record
 router.post("/createprescription", async (req, res) => {
