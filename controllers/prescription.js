@@ -44,11 +44,12 @@ router.post("/createprescription", async (req, res) => {
       selectedPackage,
       packageAmount,
       discount,
-      netAmount
+      netAmount,
+      otDate
     } = req.body;
     
     const query =
-      "INSERT INTO prescriptions (name, mobilenumber, sex, age,   doctorname,  guardianname,guardiannumber,location,price,  rpcode, type, notes, note, date, tests, group_tests, medicines, selectedPackage, packageAmount, discount, netAmount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO prescriptions (name, mobilenumber, sex, age,   doctorname,  guardianname,guardiannumber,location,price,  rpcode, type, notes, note, date, tests, group_tests, medicines, selectedPackage, packageAmount, discount, netAmount, otDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     await db.query(
       query,
@@ -73,7 +74,8 @@ router.post("/createprescription", async (req, res) => {
         selectedPackage,
         packageAmount,
         discount,
-        netAmount
+        netAmount,
+        otDate
       ]
     );
 

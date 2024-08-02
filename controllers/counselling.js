@@ -34,11 +34,11 @@ router.get("/", async (req, res) => {
 // Update counselling details
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { selectedPackage, packageAmount, discount, netAmount } = req.body;
-  const sqlUpdate = "UPDATE prescriptions SET selectedPackage = ?, packageAmount = ?, discount = ?, netAmount = ? WHERE id = ?";
+  const { selectedPackage, packageAmount, discount, netAmount, otDate } = req.body;
+  const sqlUpdate = "UPDATE prescriptions SET selectedPackage = ?, packageAmount = ?, discount = ?, netAmount = ?, otDate = ? WHERE id = ?";
 
   try {
-    const result = await db.query(sqlUpdate, [selectedPackage, packageAmount, discount, netAmount, id]);
+    const result = await db.query(sqlUpdate, [selectedPackage, packageAmount, discount, netAmount, otDate, id]);
 
     if (result.affectedRows === 0) {
       res.status(404).json({ error: "Counselling not found" });
