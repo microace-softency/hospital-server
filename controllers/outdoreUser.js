@@ -54,7 +54,6 @@ router.post('/createoutdoreuser', async (req, res) => {
   } 
 });
 
-
 //login out door user
 router.post('/loginoutdoreuser', async (req, res) => {
   const { username, password } = req.body;
