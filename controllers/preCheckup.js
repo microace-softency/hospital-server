@@ -32,14 +32,17 @@ router.get("/", async (req, res) => {
       status,
       doctorCheckupStatus,
       tests,
-      notes
+      notes,
+      lancePowers,
+      otherDetailss,
     } = req.body;
+    console.log(req.body);
   
     try {
       // Save the pre-checkup record
       await db.query(
-        'INSERT INTO pre_checkup (rpcode, date, location, name, image, mobilenumber, sex, age, guardiannumber, guardianname, doctorname, doctordesignation, time, type, price,amount, status, doctorCheckupStatus, tests, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [rpcode, date, location, name, image, mobilenumber, sex, age, guardiannumber, guardianname, doctorname, doctordesignation, time, type, price, amount, status, doctorCheckupStatus, JSON.stringify(tests), notes]
+        'INSERT INTO pre_checkup (rpcode, date, location, name, image, mobilenumber, sex, age, guardiannumber, guardianname, doctorname, doctordesignation, time, type, price,amount, status, doctorCheckupStatus, tests, notes, lancePowers, otherDetailss) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [rpcode, date, location, name, image, mobilenumber, sex, age, guardiannumber, guardianname, doctorname, doctordesignation, time, type, price, amount, status, doctorCheckupStatus, JSON.stringify(tests), notes, JSON.stringify(lancePowers), JSON.stringify(otherDetailss)]
       );
   
       // Update the registration status to 'checked'
