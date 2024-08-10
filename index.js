@@ -4,11 +4,6 @@ app = express();
 const cors = require("cors");
 
 const db = require("./db");
-app.use(cors({
-  origin: '*', // Allow all origins
-  methods: 'GET,POST,PUT,DELETE,OPTIONS', // Specify allowed methods
-  allowedHeaders: 'Content-Type,Authorization' // Specify allowed headers
-}));
 
 app.use(express.json());
 
