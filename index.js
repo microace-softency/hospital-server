@@ -4,7 +4,12 @@ app = express();
 const cors = require("cors");
 
 const db = require("./db");
-app.use(cors());
+app.use(cors({
+  origin: '*', // Allow all origins
+  methods: 'GET,POST,PUT,DELETE,OPTIONS', // Specify allowed methods
+  allowedHeaders: 'Content-Type,Authorization' // Specify allowed headers
+}));
+
 app.use(express.json());
 
 const jwt = require("jsonwebtoken");
@@ -38,6 +43,7 @@ VoucherRoutes = require('./controllers/voucher');
 dashboardRoutes = require('./controllers/dashboard');
 counsellingRoutes = require('./controllers/counselling');
 outDoorPreCheckUpRoutes = require('./controllers/preCheckupOutdoor');
+
 
 
 app.get("/", (req, res) => {
@@ -157,6 +163,6 @@ const port = process.env.PORT || 8005;
 db.query("SELECT 1")
   .then((data) => {
     console.log("db Cpnnection succeeded", data);
-    app.listen(port, () => console.log("server started at 8005"));
+    app.listen(port, '0.0.0.0', () => console.log("server started at 8005"));
   })
   .catch((err) => console.log("db connection failed. \n" + err));
