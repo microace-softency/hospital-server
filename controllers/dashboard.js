@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); // Assuming you have a db.js file for database connection
+const db = require('../db');
 
 // Get registrations today
 router.get('/registrations/today', async (req, res) => {
