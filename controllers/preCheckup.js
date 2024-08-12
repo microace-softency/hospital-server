@@ -36,7 +36,6 @@ router.get("/", async (req, res) => {
       lancePowers,
       otherDetailss,
     } = req.body;
-    console.log(req.body);
   
     try {
       // Save the pre-checkup record
