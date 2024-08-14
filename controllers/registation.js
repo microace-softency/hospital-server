@@ -9,7 +9,7 @@ router.get('/registrationreport', async (req, res) => {
   const { startDate, endDate } = req.query;
 
   try {
-    const connection = await mysqlPool.getConnection();
+    const connection = await db.getConnection();
     const [rows] = await connection.query(
       'SELECT * FROM registation WHERE DATE(createdAt) BETWEEN ? AND ?',
       [startDate, endDate]

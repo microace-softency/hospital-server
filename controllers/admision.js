@@ -3,6 +3,24 @@ router = express.Router();
 
 const db = require("../db");
 
+// // Endpoint to get registrations for a specific date
+router.get('/admisionreport', async (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  try {
+    const connection = await db.getConnection();
+    const [rows] = await connection.query(
+      'SELECT * FROM admissions WHERE DATE(createdAt) BETWEEN ? AND ?',
+      [startDate, endDate]
+    );
+    connection.release();
+
+    res.json(rows); // Send the fetched rows (registrations) as JSON response
+  } catch (error) {
+    console.error('Error fetching registrations:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
 
   //fatch admision  user
  router.get("/", async (req, res) => {
@@ -99,7 +117,7 @@ const db = require("../db");
     try {
       // Example: Insert admission data into admissions table
       const sqlInsert =
-        "INSERT INTO admissions (name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed, packages, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO admissions (name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed, packages, status, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  NOW())";
       const admissionResult = await db.query(sqlInsert,
         [
           name, address, mobilenumber, pincode, block,
