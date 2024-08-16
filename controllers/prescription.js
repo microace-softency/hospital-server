@@ -101,7 +101,7 @@ router.post("/createprescription", async (req, res) => {
 router.post("/createoutdoorprescription", async (req, res) => {
   try {
     const {
-      patiantname,
+      name,
       mobilenumber,
       sex,
       age,
@@ -126,12 +126,12 @@ router.post("/createoutdoorprescription", async (req, res) => {
     } = req.body;
 
     const query =
-      "INSERT INTO outdoor_prescriptions (patiantname, mobilenumber, sex, age,   doctorname,  guardianname,guardiannumber,address,price,  orpCode, type, notes, note, date, tests, group_tests, medicines, selectedPackage, packageAmount, discount, netAmount, operation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO outdoor_prescriptions (name, mobilenumber, sex, age,   doctorname,  guardianname,guardiannumber,address,price,  orpCode, type, notes, note, date, tests, group_tests, medicines, selectedPackage, packageAmount, discount, netAmount, operation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     await db.query(
       query,
       [
-        patiantname,
+        name,
         mobilenumber,
         sex,
         age,

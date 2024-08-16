@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
       orpCode,
       date,
       address,
-      patiantname,
+      name,
       image,
       mobilenumber,
       sex,
@@ -39,8 +39,8 @@ router.get("/", async (req, res) => {
     try {
       // Save the pre-checkup record
       await db.query(
-        'INSERT INTO outdoor_pre_checkup (orpCode, date, address, patiantname, image, mobilenumber, sex, age, guardiannumber, guardianname, doctorname, doctordesignation, time, type, price,amount, status, doctorCheckupStatus, tests, notes, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [orpCode, date, address, patiantname, image, mobilenumber, sex, age, guardiannumber, guardianname, doctorname, doctordesignation, time, type, price, amount, status, doctorCheckupStatus, JSON.stringify(tests), notes, createdBy]
+        'INSERT INTO outdoor_pre_checkup (orpCode, date, address, name, image, mobilenumber, sex, age, guardiannumber, guardianname, doctorname, doctordesignation, time, type, price,amount, status, doctorCheckupStatus, tests, notes, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [orpCode, date, address, name, image, mobilenumber, sex, age, guardiannumber, guardianname, doctorname, doctordesignation, time, type, price, amount, status, doctorCheckupStatus, JSON.stringify(tests), notes, createdBy]
       );
   
       // Update the registration status to 'checked'

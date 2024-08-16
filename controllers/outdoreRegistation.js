@@ -45,7 +45,7 @@ router.get("/", async (req, res) => {
     const {
       date,
       time,
-      patiantname,
+      name,
       address,
       image,
       mobilenumber,
@@ -66,7 +66,7 @@ router.get("/", async (req, res) => {
       minute: "2-digit",
     }); // Format: HH:MM
     const sqlInsert =
-      "INSERT INTO outdore_registation (  orpCode, date, time, patiantname, address, image, mobilenumber, guardianname, guardiannumber, doctorname, sex, age, createdBy, status ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO outdore_registation (  orpCode, date, time, name, address, image, mobilenumber, guardianname, guardiannumber, doctorname, sex, age, createdBy, status ) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
   
     db.query(
       sqlInsert,
@@ -74,7 +74,7 @@ router.get("/", async (req, res) => {
         RegistationCode,
         date,
         time,
-        patiantname,
+        name,
         address,
         image,
         mobilenumber,
@@ -130,9 +130,9 @@ router.get("/", async (req, res) => {
   //OutDoor Registation details update
   router.put("/updateregistation/:id", async(req, res)=>{
     const{id}= req.params;
-    const{orpCode,date, address, patiantname, image, mobilenumber, sex, age, doctorname, time, guardianname, guardiannumber}= req.body
-    const sqlUpdate = "UPDATE outdore_registation SET orpCode = ?, date = ?, address = ?, patiantname = ?, image = ?, mobilenumber = ?, sex = ?, age = ?, doctorname = ?, time = ?, guardianname = ?, guardiannumber = ?  WHERE id = ?";
-    await db.query(sqlUpdate, [orpCode, date, address, patiantname, image, mobilenumber, sex, age, doctorname, time, guardianname, guardiannumber, id], (error, result ) =>{
+    const{orpCode,date, address, name, image, mobilenumber, sex, age, doctorname, time, guardianname, guardiannumber}= req.body
+    const sqlUpdate = "UPDATE outdore_registation SET orpCode = ?, date = ?, address = ?, name = ?, image = ?, mobilenumber = ?, sex = ?, age = ?, doctorname = ?, time = ?, guardianname = ?, guardiannumber = ?  WHERE id = ?";
+    await db.query(sqlUpdate, [orpCode, date, address, name, image, mobilenumber, sex, age, doctorname, time, guardianname, guardiannumber, id], (error, result ) =>{
       if (error) {
         console.log(error);
       }
