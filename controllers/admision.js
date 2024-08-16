@@ -111,18 +111,18 @@ router.get('/admisionreport', async (req, res) => {
     const {
       name, address, mobilenumber, pincode, block,
       age, sex, doctor, date, time, guardiannumbaer,
-      guardianname, bed, packages, status
+      guardianname, bed, packages, status, source
     } = req.body;
   
     try {
       // Example: Insert admission data into admissions table
       const sqlInsert =
-        "INSERT INTO admissions (name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed, packages, status, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,  NOW())";
+        "INSERT INTO admissions (name, address, mobilenumber, pincode, block, age, sex, doctor, date, time, guardiannumbaer, guardianname, bed, packages, status, source, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
       const admissionResult = await db.query(sqlInsert,
         [
           name, address, mobilenumber, pincode, block,
           age, sex, doctor, date, time, guardiannumbaer,
-          guardianname, bed, packages, status
+          guardianname, bed, packages, status, source
         ]
       );
   
