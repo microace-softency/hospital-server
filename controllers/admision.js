@@ -180,11 +180,11 @@ router.get('/admisionreport', async (req, res) => {
 
   router.put("/status/:id", async (req, res) => {
     const { id } = req.params;
-    const { status } = req.body;
-    const query = "UPDATE admissions SET status = ? WHERE id = ?";
+    const { status,  nextVisitDate, narration } = req.body;
+    const query = "UPDATE admissions SET status = ?, nextVisitDate = ?, narration = ? WHERE id = ?";
     
     try {
-      const result = await db.query(query, [status, id]);
+      const result = await db.query(query, [status,  nextVisitDate, narration, id]);
       res.send(result);
     } catch (err) {
       console.error('Failed to update status', err);
