@@ -30,6 +30,23 @@ router.get("/", async (req, res) => {
       res.status(500).json({ error: "counselling Server Error" });
     }
   }); 
+  router.get("/otdoorview/:id", async (req, res) => {
+    const { id } = req.params;
+    const sqlGet = "SELECT * FROM outdoor_prescriptions WHERE id = ?";
+  
+    try {
+      const result = await db.query(sqlGet, id);
+  
+      if (result.length === 0) {
+        res.status(404).json({ error: "counselling not found" });
+      } else {
+        res.json(result[0]);
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "counselling Server Error" });
+    }
+  }); 
   
 // Update counselling details
 router.put("/:id", async (req, res) => {
