@@ -3,6 +3,27 @@ router = express.Router();
 
 const db = require("../db");
 
+
+// // Endpoint to get pathology for a specific date
+router.get('/pathologyreport', async (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  try {
+    const connection = await db.getConnection();
+    const [rows] = await connection.query(
+      'SELECT * FROM pathology_records WHERE DATE(createdAt) BETWEEN ? AND ?',
+      [startDate, endDate]
+    );
+    connection.release();
+
+    res.json(rows); // Send the fetched rows (registrations) as JSON response
+  } catch (error) {
+    console.error('Error fetching pathology:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 //fatch pathology  user
 router.get("/", async (req, res) => {
   await db
@@ -92,7 +113,7 @@ router.post("/createpathology", async (req, res) => {
   } = req.body;
 
   const query =
-    "INSERT INTO pathology_records (patientname, tests, group_tests, referDrName, totalAmount, advancePayment, duePayment, date, patientnumber, patientaddress, agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO pathology_records (patientname, tests, group_tests, referDrName, totalAmount, advancePayment, duePayment, date, patientnumber, patientaddress, agent, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
  await db.query( query,
     [
       patientname,
