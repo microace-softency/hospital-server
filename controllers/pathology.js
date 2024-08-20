@@ -110,10 +110,11 @@ router.post("/createpathology", async (req, res) => {
     patientnumber,
     patientaddress,
     agent,
+    status
   } = req.body;
 
   const query =
-    "INSERT INTO pathology_records (patientname, tests, group_tests, referDrName, totalAmount, advancePayment, duePayment, date, patientnumber, patientaddress, agent, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+    "INSERT INTO pathology_records (patientname, tests, group_tests, referDrName, totalAmount, advancePayment, duePayment, date, patientnumber, patientaddress, agent, status, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
  await db.query( query,
     [
       patientname,
@@ -127,6 +128,7 @@ router.post("/createpathology", async (req, res) => {
       patientnumber,
       patientaddress,
       agent,
+      status
     ]);
     res.status(200).send("Pathology Created");
   } catch (error) {
@@ -276,10 +278,11 @@ router.put("/updateinhousepathology/:id", async (req, res) => {
     patientnumber,
     patientaddress,
     agent,
+    status
   } = req.body;
 
   const sqlUpdate =
-    "UPDATE inHouse_pathology_records SET patientname = ?, tests = ?, referDrName = ?, totalAmount = ?, advancePayment = ?, duePayment = ?, date = ?, patientnumber = ?, patientaddress = ?, agent = ? WHERE id = ?";
+    "UPDATE inHouse_pathology_records SET patientname = ?, tests = ?, referDrName = ?, totalAmount = ?, advancePayment = ?, duePayment = ?, date = ?, patientnumber = ?, patientaddress = ?, agent = ?, status = ? WHERE id = ?";
   
   try {
     const result = await db.query(
@@ -295,6 +298,7 @@ router.put("/updateinhousepathology/:id", async (req, res) => {
         patientnumber,
         patientaddress,
         agent,
+        status,
         id,
       ]
     );
