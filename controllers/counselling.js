@@ -51,11 +51,11 @@ router.get("/", async (req, res) => {
 // Update counselling details
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { selectedPackage, packageAmount, discount, netAmount, otDate, source } = req.body;
-  const sqlUpdate = "UPDATE prescriptions SET selectedPackage = ?, packageAmount = ?, discount = ?, netAmount = ?, otDate = ?, source = ? WHERE id = ?";
+  const { selectedPackage, packageAmount, discount, netAmount, advance, otDate, source } = req.body;
+  const sqlUpdate = "UPDATE prescriptions SET selectedPackage = ?, packageAmount = ?, discount = ?, netAmount = ?, advance = ?, otDate = ?, source = ? WHERE id = ?";
 
   try {
-    const result = await db.query(sqlUpdate, [selectedPackage, packageAmount, discount, netAmount, otDate, source, id]);
+    const result = await db.query(sqlUpdate, [selectedPackage, packageAmount, discount, netAmount, advance, otDate, source, id]);
 
     if (result.affectedRows === 0) {
       res.status(404).json({ error: "Counselling not found" });
@@ -70,11 +70,11 @@ router.put("/:id", async (req, res) => {
 // Update counselling details
 router.put("/outdoor/:id", async (req, res) => {
   const { id } = req.params;
-  const { selectedPackage, packageAmount, discount, netAmount, otDate, source } = req.body;
-  const sqlUpdate = "UPDATE outdoor_prescriptions SET selectedPackage = ?, packageAmount = ?, discount = ?, netAmount = ?, otDate = ?, source = ? WHERE id = ?";
+  const { selectedPackage, packageAmount, discount, netAmount, advance, otDate, source } = req.body;
+  const sqlUpdate = "UPDATE outdoor_prescriptions SET selectedPackage = ?, packageAmount = ?, discount = ?, netAmount = ?, advance = ?, otDate = ?, source = ? WHERE id = ?";
 
   try {
-    const result = await db.query(sqlUpdate, [selectedPackage, packageAmount, discount, netAmount, otDate, source, id]);
+    const result = await db.query(sqlUpdate, [selectedPackage, packageAmount, discount, netAmount, advance, otDate, source, id]);
 
     if (result.affectedRows === 0) {
       res.status(404).json({ error: "Counselling not found" });

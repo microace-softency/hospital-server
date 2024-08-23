@@ -168,5 +168,21 @@ router.put("/updateproduct/:id", async (req, res) => {
   }
 });
 
+app.put('/:id/update-stock', async (req, res) => {
+  const productId = req.params.id;
+  const { opening } = req.body;
+
+  try {
+    await db.query(
+      'UPDATE productmaster SET opening = ? WHERE id = ?',
+      [opening, productId]
+    );
+    res.status(200).json({ message: 'opening updated successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update opening' });
+  }
+});
+
+
 
 module.exports = router;
