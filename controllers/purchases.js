@@ -1,7 +1,7 @@
 // const express = require("express");
 // const router = express.Router();
 // const db = require("../db");
- 
+
 // const getNextPurchasesCode = async () => {
 //   const [result] = await db.query(
 //     "SELECT MAX(CAST(SUBSTRING(PurchaseInvNo, 3) AS UNSIGNED)) AS maxCode FROM purchase"
@@ -68,7 +68,7 @@
 //     ]);
 
 //     const purchaseId = purchaseResult.insertId;
-    
+
 //     for (const item of items) {
 //       await connection.query(sqlInsertItem, [
 //         purchaseId,
@@ -141,46 +141,44 @@
 
 // module.exports = router;
 
-
-
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const db = require("../db");
+const db = require('../db');
 
 // Helper function to get next purchase code
 const getNextPurchasesCode = async () => {
   const [result] = await db.query(
-    "SELECT MAX(CAST(SUBSTRING(PurchaseInvNo, 3) AS UNSIGNED)) AS maxCode FROM purchase"
+    'SELECT MAX(CAST(SUBSTRING(PurchaseInvNo, 3) AS UNSIGNED)) AS maxCode FROM purchase'
   );
   const maxCode = result[0].maxCode || 0;
-  const nextCode = (maxCode + 1).toString().padStart(3, "0");
+  const nextCode = (maxCode + 1).toString().padStart(3, '0');
   return `PR${nextCode}`;
 };
 
 // Get next purchases code
-router.get("/nextpurchasescode", async (req, res) => {
+router.get('/nextpurchasescode', async (req, res) => {
   try {
     const nextPurchasesCode = await getNextPurchasesCode();
     res.json({ PurchasesCode: nextPurchasesCode });
   } catch (error) {
-    console.error("Error generating next Purchases code:", error);
-    res.status(500).json({ error: "Error generating next Purchases code" });
+    console.error('Error generating next Purchases code:', error);
+    res.status(500).json({ error: 'Error generating next Purchases code' });
   }
 });
 
 // Fetch all purchases
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const [data] = await db.query("SELECT * FROM purchase");
+    const [data] = await db.query('SELECT * FROM purchase');
     res.send(data);
   } catch (err) {
-    console.error("Error fetching purchases:", err);
-    res.status(500).send("Error fetching data from database");
+    console.error('Error fetching purchases:', err);
+    res.status(500).send('Error fetching data from database');
   }
 });
 
 // Create purchase and associated batches
-router.post("/createpurchase", async (req, res) => {
+router.post('/createpurchase', async (req, res) => {
   const {
     InvDate,
     PartyInvNo,
@@ -235,8 +233,8 @@ router.post("/createpurchase", async (req, res) => {
 
       if (Array.isArray(item.Batches) && item.Batches.length > 0) {
         for (const batch of item.Batches) {
-          const { productCode, batchNumber, mfgDate, expDate, quantity } = batch;
-
+          const { productCode, batchNumber, mfgDate, expDate, quantity } =
+            batch;
 
           if (productCode && batchNumber && mfgDate && expDate && quantity) {
             await connection.query(
@@ -244,68 +242,61 @@ router.post("/createpurchase", async (req, res) => {
               INSERT INTO batches (PurchaseID, ProductCode, BatchNumber, ManufacturingDate, ExpiryDate, Quantity)
               VALUES (?, ?, ?, ?, ?, ?)
               `,
-              [
-                purchaseId,
-                productCode,
-                batchNumber,
-                mfgDate,
-                expDate,
-                quantity,
-              ]
+              [purchaseId, productCode, batchNumber, mfgDate, expDate, quantity]
             );
           } else {
-            console.error("Batch data missing required fields:", batch);
+            console.error('Batch data missing required fields:', batch);
           }
         }
       }
     }
 
     await connection.commit();
-    res.status(200).send("Purchase Created");
+    res.status(200).send('Purchase Created');
   } catch (error) {
     await connection.rollback();
-    console.error("Error creating purchase:", error);
-    res.status(500).send("Error creating purchase");
+    console.error('Error creating purchase:', error);
+    res.status(500).send('Error creating purchase');
   } finally {
     connection.release();
   }
 });
 
 // Fetch purchase by ID with associated items and batches
-router.get("/:id", async (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
     // Fetch purchase details
     const [[purchase]] = await db.query(
-      "SELECT * FROM purchase WHERE PurchaseID = ?",
+      'SELECT * FROM purchase WHERE PurchaseID = ?',
       [id]
     );
     if (!purchase) {
-      return res.status(404).send("Purchase not found");
+      return res.status(404).send('Purchase not found');
     }
 
     // Fetch items related to purchase
     const [items] = await db.query(
-      "SELECT * FROM purchase_items WHERE PurchaseID = ?",
+      'SELECT * FROM purchase_items WHERE PurchaseID = ?',
       [id]
     );
 
     // Fetch batches related to purchase
     const [batches] = await db.query(
-      "SELECT * FROM batches WHERE PurchaseID = ?",
+      'SELECT * FROM batches WHERE PurchaseID = ?',
       [id]
     );
 
     res.send({ purchase, items, batches });
   } catch (err) {
-    console.error("Error fetching purchase:", err);
-    res.status(500).send("Error fetching purchase");
+    console.error('Error fetching purchase:', err);
+    res.status(500).send('Error fetching purchase');
   }
 });
 
 // Remove purchase by ID
-router.delete("/removepurchase/:id", async (req, res) => {
+router.delete('/removepurchase/:id', async (req, res) => {
   const { id } = req.params;
 
   const connection = await db.getConnection();
@@ -313,22 +304,22 @@ router.delete("/removepurchase/:id", async (req, res) => {
 
   try {
     // Delete items related to purchase
-    await connection.query("DELETE FROM purchase_items WHERE PurchaseID = ?", [
+    await connection.query('DELETE FROM purchase_items WHERE PurchaseID = ?', [
       id,
     ]);
 
     // Delete batches related to purchase
-    await connection.query("DELETE FROM batches WHERE PurchaseID = ?", [id]);
+    await connection.query('DELETE FROM batches WHERE PurchaseID = ?', [id]);
 
     // Delete purchase itself
-    await connection.query("DELETE FROM purchase WHERE PurchaseID = ?", [id]);
+    await connection.query('DELETE FROM purchase WHERE PurchaseID = ?', [id]);
 
     await connection.commit();
-    res.status(200).send("Purchase deleted");
+    res.status(200).send('Purchase deleted');
   } catch (error) {
     await connection.rollback();
-    console.error("Error deleting purchase:", error);
-    res.status(500).send("Error deleting purchase");
+    console.error('Error deleting purchase:', error);
+    res.status(500).send('Error deleting purchase');
   } finally {
     connection.release();
   }
