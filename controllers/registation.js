@@ -34,7 +34,7 @@ const getNextRegistationCode = async () => {
 };
 
 //next registation code create
-router.get("/nexregistationcode", async (req, res) => {
+router.get("/nextregistationcode", async (req, res) => {
   try {
     const nextRegistationCode = await getNextRegistationCode();
     res.json({ RegistationCode: nextRegistationCode });
