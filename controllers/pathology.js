@@ -155,7 +155,7 @@ router.post("/inhousecreatepathology", async (req, res) => {
   } = req.body;
 
   const query =
-    "INSERT INTO inHouse_pathology_records (patientname, tests, referDrName, totalAmount, advancePayment, duePayment, date, patientnumber, patientaddress, agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO inHouse_pathology_records (patientname, tests, referDrName, totalAmount, advancePayment, duePayment, date, patientnumber, patientaddress, agent ,createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
  await db.query( query,
     [
       patientname,
