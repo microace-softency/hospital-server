@@ -38,7 +38,7 @@ VoucherRoutes = require('./controllers/voucher');
 dashboardRoutes = require('./controllers/dashboard');
 counsellingRoutes = require('./controllers/counselling');
 outDoorPreCheckUpRoutes = require('./controllers/preCheckupOutdoor');
-
+transRoutes = require('./controllers/trans1')
 
 
 app.get("/", (req, res) => {
@@ -152,6 +152,9 @@ app.use('/api/voucher', VoucherRoutes);
 
 //dashboard
 app.use('/api/dashboard', dashboardRoutes); 
+
+//trsns
+app.use('/api/trans', transRoutes); 
 
 const port = process.env.PORT || 8005;
 

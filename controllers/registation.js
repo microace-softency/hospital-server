@@ -66,64 +66,6 @@ router.get('/today', async (req, res) => {
 });
 
 //crete registation
-// router.post("/createregistation", async (req, res) => {
-//   const RegistationCode = await getNextRegistationCode();
-//   const {
-//     date,
-//     location,
-//     name,
-//     image,
-//     mobilenumber,
-//     sex,
-//     age,
-//     doctorname,
-//     time,
-//     type,
-//     price,
-//     guardianname,
-//     guardiannumber,
-//     status,
-//   } = req.body;
-
-//   const currentDate = new Date();
-//   const formattedDate = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-//   const currentTime = currentDate.toLocaleTimeString([], {
-//     hour: "2-digit",
-//     minute: "2-digit",
-//   }); // Format: HH:MM
-//   const sqlInsert =
-//     "INSERT INTO registation ( rpcode ,date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status, createdAt) VALUES( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW() )";
-
-//   db.query(
-//     sqlInsert,
-//     [
-//       RegistationCode,
-//       date,
-//       location,
-//       name,
-//       image,
-//       mobilenumber,
-//       sex,
-//       age,
-//       doctorname,
-//       time,
-//       type,
-//       price,
-//       guardianname,
-//       guardiannumber,
-//       status,
-//     ],
-//     (error, result) => {
-//       if (error) {
-//         console.error("Error inserting data:", error);
-//         res.status(500).send("Error inserting data into database");
-//       } else {
-//         console.log("Data inserted successfully");
-//         res.status(200).send("Doctor Created");
-//       }
-//     }
-//   );
-// });
 router.post("/createregistation", async (req, res) => {
   try {
     let { rpcode, date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status } = req.body;
