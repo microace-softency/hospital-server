@@ -69,7 +69,6 @@ router.get('/today', async (req, res) => {
 router.post("/createregistation", async (req, res) => {
   try {
     let { rpcode, date, location, name, image, mobilenumber, sex, age, doctorname, time, type, price, guardianname, guardiannumber, status } = req.body;
-    console.log('get deta', req.body);
     // If rpcode is not provided by the frontend, generate it on the backend
     if (!rpcode) {
       rpcode = await getNextRegistationCode();
@@ -107,15 +106,7 @@ router.post("/createregistation", async (req, res) => {
         guardiannumber,
         status,
       ],
-      (error, result) => {
-        if (error) {
-          console.error("Error inserting data:", error);
-          res.status(500).send("Error inserting data into database");
-        } else {
-          console.log("Data inserted successfully");
-          res.status(200).send("Registration Created");
-        }
-      }
+       res.status(200).json({ message: "Registration Created", id: rpcode })
     );
   } catch (error) {
     console.error("Error in registration creation:", error);
