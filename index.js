@@ -35,6 +35,8 @@ salesRoutes = require("./controllers/sales");
 authRoutes = require('./controllers/login');
 LedgerRoutes = require('./controllers/generalLedger');
 VoucherRoutes = require('./controllers/voucher');
+VoucherCustomerRoutes = require('./controllers/vouchers/customer');
+VoucherVendorRoutes = require('./controllers/vouchers/vendor');
 dashboardRoutes = require('./controllers/dashboard');
 counsellingRoutes = require('./controllers/counselling');
 outDoorPreCheckUpRoutes = require('./controllers/preCheckupOutdoor');
@@ -149,6 +151,10 @@ app.use('/api/ledger', LedgerRoutes);
 
 //Voucher
 app.use('/api/voucher', VoucherRoutes);
+//Voucher
+app.use('/api/vouchers/vendor', VoucherVendorRoutes);
+//Voucher
+app.use('/api/vouchers/customer', VoucherCustomerRoutes);
 
 //dashboard
 app.use('/api/dashboard', dashboardRoutes); 
